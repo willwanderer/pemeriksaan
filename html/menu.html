@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Utama</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .header {
+            background: #fff;
+            border-radius: 15px;
+            padding: 20px 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 22px;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .menu-container {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .menu-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 40px 50px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            flex: 1;
+            min-width: 250px;
+            max-width: 350px;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+        }
+
+        .menu-card.kontak {
+            border-top: 5px solid #4caf50;
+        }
+
+        .menu-card.kertas-kerja {
+            border-top: 5px solid #667eea;
+        }
+
+        .menu-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .menu-card.kontak .menu-icon {
+            background: #e8f5e9;
+        }
+
+        .menu-card.kertas-kerja .menu-icon {
+            background: #e8eaf6;
+        }
+
+        .menu-icon svg {
+            width: 40px;
+            height: 40px;
+        }
+
+        .menu-card.kontak .menu-icon svg {
+            fill: #4caf50;
+        }
+
+        .menu-card.kertas-kerja .menu-icon svg {
+            fill: #667eea;
+        }
+
+        .menu-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .menu-desc {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .back-btn svg {
+            width: 24px;
+            height: 24px;
+            fill: #333;
+        }
+
+        @media (max-width: 600px) {
+            .menu-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .menu-card {
+                width: 100%;
+            }
+
+            .header {
+                padding: 15px 25px;
+            }
+
+            .header h1 {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="back-btn" onclick="window.location.href='index.html'">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+        </svg>
+    </button>
+
+    <div class="header">
+        <h1>Dinas Pekerjaan Umum</h1>
+        <p>Provinsi Jawa Barat</p>
+    </div>
+
+    <div class="menu-container">
+        <div class="menu-card kontak" onclick="window.location.href='kontak.html'">
+            <div class="menu-icon">
+                <!-- Contact Icon -->
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                </svg>
+            </div>
+            <div class="menu-title">Kontak</div>
+            <div class="menu-desc">Informasi kontak dinas</div>
+        </div>
+
+        <div class="menu-card kertas-kerja" onclick="window.location.href='kertas_kerja.html'">
+            <div class="menu-icon">
+                <!-- Document Icon -->
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                </svg>
+            </div>
+            <div class="menu-title">Kertas Kerja Belanja Modal</div>
+            <div class="menu-desc">Kelola data belanja modal</div>
+        </div>
+    </div>
+</body>
+</html>

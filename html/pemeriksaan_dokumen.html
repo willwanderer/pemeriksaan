@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pemeriksaan Dokumen</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+    <script src="script.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #f5f6fa;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: #fff;
+            border-radius: 12px;
+            padding: 25px 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .section {
+            background: #fff;
+            border-radius: 12px;
+            padding: 25px 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .document-list {
+            border-radius: 8px;
+        }
+
+        .document-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .document-item:last-child {
+            border-bottom: none;
+        }
+
+        .document-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex: 1;
+        }
+
+        .document-checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .document-name {
+            font-size: 14px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .document-status {
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            margin-left: 10px;
+        }
+
+        .status-belum {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-sudah {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .upload-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .btn-upload {
+            background: #667eea;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-upload:hover {
+            background: #5a6fd6;
+        }
+
+        .btn-upload svg {
+            width: 16px;
+            height: 16px;
+            fill: #fff;
+        }
+
+        .file-name {
+            font-size: 12px;
+            color: #666;
+            max-width: 150px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .back-btn svg {
+            width: 24px;
+            height: 24px;
+            fill: #333;
+        }
+    </style>
+</head>
+<body>
+    <button class="back-btn" onclick="window.location.href='detail_pekerjaan.html'">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+        </svg>
+    </button>
+
+    <div class="container">
+        <div class="header">
+            <h1>Pemeriksaan Dokumen</h1>
+            <p>Peningkatan Jalan Cijeruk-Cibinong - Belanja Modal Jalan, Irigasi, dan Jaringan</p>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">Dokumen Umum</h2>
+            <div class="document-list">
+                <div class="document-item">
+                    <div class="document-info">
+                        <input type="checkbox" class="document-checkbox" id="doc1" onchange="updateCount()">
+                        <label class="document-name" for="doc1">Kontrak/Surat Pemesanan</label>
+                        <span class="document-status status-belum" id="status1">Belum Upload</span>
+                    </div>
+                    <div class="upload-container">
+                        <input type="file" class="file-input" id="file1" onchange="uploadFile(this, 'doc1')">
+                        <button class="btn-upload" onclick="document.getElementById('file1').click()">
+                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
+                            Upload
+                        </button>
+                        <span class="file-name" id="name1"></span>
+                    </div>
+                </div>
+                <div class="document-item">
+                    <div class="document-info">
+                        <input type="checkbox" class="document-checkbox" id="doc2" onchange="updateCount()">
+                        <label class="document-name" for="doc2">SPMK</label>
+                        <span class="document-status status-belum" id="status2">Belum Upload</span>
+                    </div>
+                    <div class="upload-container">
+                        <input type="file" class="file-input" id="file2" onchange="uploadFile(this, 'doc2')">
+                        <button class="btn-upload" onclick="document.getElementById('file2').click()">
+                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
+                            Upload
+                        </button>
+                        <span class="file-name" id="name2"></span>
+                    </div>
+                </div>
+                <div class="document-item">
+                    <div class="document-info">
+                        <input type="checkbox" class="document-checkbox" id="doc3" onchange="updateCount()">
+                        <label class="document-name" for="doc3">Gambar Rencana</label>
+                        <span class="document-status status-belum" id="status3">Belum Upload</span>
+                    </div>
+                    <div class="upload-container">
+                        <input type="file" class="file-input" id="file3" onchange="uploadFile(this, 'doc3')">
+                        <button class="btn-upload" onclick="document.getElementById('file3').click()">
+                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
+                            Upload
+                        </button>
+                        <span class="file-name" id="name3"></span>
+                    </div>
+                </div>
+                <div class="document-item">
+                    <div class="document-info">
+                        <input type="checkbox" class="document-checkbox" id="doc4" onchange="updateCount()">
+                        <label class="document-name" for="doc4">Gambar Pelaksanaan</label>
+                        <span class="document-status status-belum" id="status4">Belum Upload</span>
+                    </div>
+                    <div class="upload-container">
+                        <input type="file" class="file-input" id="file4" onchange="uploadFile(this, 'doc4')">
+                        <button class="btn-upload" onclick="document.getElementById('file4').click()">
+                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
+                            Upload
+                        </button>
+                        <span class="file-name" id="name4"></span>
+                    </div>
+                </div>
+                <div class="document-item">
+                    <div class="document-info">
+                        <input type="checkbox" class="document-checkbox" id="doc5" onchange="updateCount()">
+                        <label class="document-name" for="doc5">Backup Data Quantity</label>
+                        <span class="document-status status-belum" id="status5">Belum Upload</span>
+                    </div>
+                    <div class="upload-container">
+                        <input type="file" class="file-input" id="file5" onchange="uploadFile(this, 'doc5')">
+                        <button class="btn-upload" onclick="document.getElementById('file5').click()">
+                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
+                            Upload
+                        </button>
+                        <span class="file-name" id="name5"></span>
+                    </div>
+                </div>
+                <div class="document-item">
+                    <div class="document-info">
+                        <input type="checkbox" class="document-checkbox" id="doc6" onchange="updateCount()">
+                        <label class="document-name" for="doc6">Monthly Certificate</label>
+                        <span class="document-status status-belum" id="status6">Belum Upload</span>
+                    </div>
+                    <div class="upload-container">
+                        <input type="file" class="file-input" id="file6" onchange="uploadFile(this, 'doc6')">
+                        <button class="btn-upload" onclick="document.getElementById('file6').click()">
+                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
+                            Upload
+                        </button>
+                        <span class="file-name" id="name6"></span>
+                    </div>
+                </div>
+                <div class="document-item">
+                    <div class="document-info">
+                        <input type="checkbox" class="document-checkbox" id="doc7" onchange="updateCount()">
+                        <label class="document-name" for="doc7">Foto (0%, 50% dan 100%)</label>
+                        <span class="document-status status-belum" id="status7">Belum Upload</span>
+                    </div>
+                    <div class="upload-container">
+                        <input type="file" class="file-input" id="file7" onchange="uploadFile(this, 'doc7')" multiple>
+                        <button class="btn-upload" onclick="document.getElementById('file7').click()">
+                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
+                            Upload
+                        </button>
+                        <span class="file-name" id="name7"></span>
+                    </div>
+                </div>
+                <div class="document-item">
+                    <div class="document-info">
+                        <input type="checkbox" class="document-checkbox" id="doc8" onchange="updateCount()">
+                        <label class="document-name" for="doc8">Berita Acara Hasil Pemeriksaan Pekerjaan</label>
+                        <span class="document-status status-belum" id="status8">Belum Upload</span>
+                    </div>
+                    <div class="upload-container">
+                        <input type="file" class="file-input" id="file8" onchange="uploadFile(this, 'doc8')">
+                        <button class="btn-upload" onclick="document.getElementById('file8').click()">
+                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
+                            Upload
+                        </button>
+                        <span class="file-name" id="name8"></span>
+                    </div>
+                </div>
+                <div class="document-item">
+                    <div class="document-info">
+                        <input type="checkbox" class="document-checkbox" id="doc9" onchange="updateCount()">
+                        <label class="document-name" for="doc9">PHO (Provisional Hand Over)</label>
+                        <span class="document-status status-belum" id="status9">Belum Upload</span>
+                    </div>
+                    <div class="upload-container">
+                        <input type="file" class="file-input" id="file9" onchange="uploadFile(this, 'doc9')">
+                        <button class="btn-upload" onclick="document.getElementById('file9').click()">
+                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
+                            Upload
+                        </button>
+                        <span class="file-name" id="name9"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">Khusus Belanja Modal Tanah</h2>
+            <div class="document-list">
+                <div class="document-item">
+                    <div class="document-info">
+                        <input type="checkbox" class="document-checkbox" id="doc10" onchange="updateCount()">
+                        <label class="document-name" for="doc10">Berita Acara Pengadaan/Pelepasan Tanah</label>
+                        <span class="document-status status-belum" id="status10">Belum Upload</span>
+                    </div>
+                    <div class="upload-container">
+                        <input type="file" class="file-input" id="file10" onchange="uploadFile(this, 'doc10')">
+                        <button class="btn-upload" onclick="document.getElementById('file10').click()">
+                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
+                            Upload
+                        </button>
+                        <span class="file-name" id="name10"></span>
+                    </div>
+                </div>
+                <div class="document-item">
+                    <div class="document-info">
+                        <input type="checkbox" class="document-checkbox" id="doc11" onchange="updateCount()">
+                        <label class="document-name" for="doc11">Surat Keterangan Penjualan Tanah</label>
+                        <span class="document-status status-belum" id="status11">Belum Upload</span>
+                    </div>
+                    <div class="upload-container">
+                        <input type="file" class="file-input" id="file11" onchange="uploadFile(this, 'doc11')">
+                        <button class="btn-upload" onclick="document.getElementById('file11').click()">
+                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
+                            Upload
+                        </button>
+                        <span class="file-name" id="name11"></span>
+                    </div>
+                </div>
+                <div class="document-item">
+                    <div class="document-info">
+                        <input type="checkbox" class="document-checkbox" id="doc12" onchange="updateCount()">
+                        <label class="document-name" for="doc12">Surat Pernyataan Persetujuan Pemilik Tanah</label>
+                        <span class="document-status status-belum" id="status12">Belum Upload</span>
+                    </div>
+                    <div class="upload-container">
+                        <input type="file" class="file-input" id="file12" onchange="uploadFile(this, 'doc12')">
+                        <button class="btn-upload" onclick="document.getElementById('file12').click()">
+                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
+                            Upload
+                        </button>
+                        <span class="file-name" id="name12"></span>
+                    </div>
+                </div>
+                <div class="document-item">
+                    <div class="document-info">
+                        <input type="checkbox" class="document-checkbox" id="doc13" onchange="updateCount()">
+                        <label class="document-name" for="doc13">Surat Pernyataan Pemilik Tanah</label>
+                        <span class="document-status status-belum" id="status13">Belum Upload</span>
+                    </div>
+                    <div class="upload-container">
+                        <input type="file" class="file-input" id="file13" onchange="uploadFile(this, 'doc13')">
+                        <button class="btn-upload" onclick="document.getElementById('file13').click()">
+                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
+                            Upload
+                        </button>
+                        <span class="file-name" id="name13"></span>
+                    </div>
+                </div>
+                <div class="document-item">
+                    <div class="document-info">
+                        <input type="checkbox" class="document-checkbox" id="doc14" onchange="updateCount()">
+                        <label class="document-name" for="doc14">Sertifikat Tanah Pemilik Sebelumnya</label>
+                        <span class="document-status status-belum" id="status14">Belum Upload</span>
+                    </div>
+                    <div class="upload-container">
+                        <input type="file" class="file-input" id="file14" onchange="uploadFile(this, 'doc14')">
+                        <button class="btn-upload" onclick="document.getElementById('file14').click()">
+                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
+                            Upload
+                        </button>
+                        <span class="file-name" id="name14"></span>
+                    </div>
+                </div>
+                <div class="document-item">
+                    <div class="document-info">
+                        <input type="checkbox" class="document-checkbox" id="doc15" onchange="updateCount()">
+                        <label class="document-name" for="doc15">Dokumen Apraisal Tanah</label>
+                        <span class="document-status status-belum" id="status15">Belum Upload</span>
+                    </div>
+                    <div class="upload-container">
+                        <input type="file" class="file-input" id="file15" onchange="uploadFile(this, 'doc15')">
+                        <button class="btn-upload" onclick="document.getElementById('file15').click()">
+                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
+                            Upload
+                        </button>
+                        <span class="file-name" id="name15"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function uploadFile(input, docId) {
+            var file = input.files[0];
+            if (file) {
+                var docNum = docId.replace('doc', '');
+                var nameSpan = document.getElementById('name' + docNum);
+                nameSpan.textContent = file.name;
+                
+                var statusSpan = document.getElementById('status' + docNum);
+                statusSpan.textContent = 'Sudah Upload';
+                statusSpan.classList.remove('status-belum');
+                statusSpan.classList.add('status-sudah');
+                
+                var checkbox = document.getElementById(docId);
+                checkbox.checked = true;
+                
+                updateCount();
+                
+                Swal.fire(
+                    'Berhasil!',
+                    'Dokumen berhasil diupload.',
+                    'success'
+                );
+            }
+        }
+
+        function updateCount() {
+            var totalDocs = 15;
+            var checkedCount = 0;
+            for (var i = 1; i <= totalDocs; i++) {
+                if (document.getElementById('doc' + i) && document.getElementById('doc' + i).checked) {
+                    checkedCount++;
+                }
+            }
+            localStorage.setItem('docCount', checkedCount);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Pekerjaan</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+    <script src="script.js"></script>
+
+</head>
+<body>
+    <button class="back-btn" onclick="window.location.href='kertas_kerja.html'">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+        </svg>
+    </button>
+
+    <div class="container">
+        <div class="header">
+            <div class="header-top">
+                <div>
+                    <h1>Peningkatan Jalan Cijeruk-Cibinong</h1>
+                    <p>Detail informasi belanja modal</p>
+                </div>
+            </div>
+            <div class="info-grid">
+                <div class="info-item">
+                    <label>Jenis Belanja Modal</label>
+                    <span>Belanja Modal Jalan, Irigasi, dan Jaringan</span>
+                </div>
+                <div class="info-item">
+                    <label>SKPD</label>
+                    <span>Dinas PU Provinsi Jawa Barat</span>
+                </div>
+                <div class="info-item">
+                    <label>Penyedia</label>
+                    <span>PT Jaya Konstruksi</span>
+                </div>
+                <div class="info-item">
+                    <label>Nomor Kontrak</label>
+                    <span>PU/001/2024</span>
+                </div>
+                <div class="info-item">
+                    <label>Nilai Kontrak</label>
+                    <span>Rp 5.500.000.000</span>
+                </div>
+                <div class="info-item">
+                    <label>Status</label>
+                    <span class="badge badge-warning">Sedang Berjalan</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Status Progress -->
+        <div class="status-section">
+            <h2 class="status-title">Status Progress</h2>
+            <div class="status-cards">
+                <div class="status-card warning">
+                    <label>Keterlambatan</label>
+                    <div class="value late">15 Hari</div>
+                </div>
+                <div class="status-card warning">
+                    <label>Progress Pembayaran</label>
+                    <div class="value">50%</div>
+                    <small style="opacity: 0.8;">Rp 2,75M / Rp 5,5M</small>
+                </div>
+                <div class="status-card">
+                    <label>Dokumen</label>
+                    <div class="value" id="docCount">0/15</div>
+                    <small style="opacity: 0.8;">terupload</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Item Pekerjaan -->
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title">Item Pekerjaan</h2>
+                <a href="tambah_item_pekerjaan.html" class="btn-tambah">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                    </svg>
+                    Tambah Item
+                </a>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Nama Item Pekerjaan</th>
+                        <th>Satuan</th>
+                        <th>Volume</th>
+                        <th>Harga Satuan</th>
+                        <th>Jumlah</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td data-label="No">1</td>
+                        <td data-label="Nama Item">Pekerjaan Persiapan</td>
+                        <td data-label="Satuan">Ls</td>
+                        <td data-label="Volume">1</td>
+                        <td class="currency" data-label="Harga">Rp 150.000.000</td>
+                        <td class="currency" data-label="Jumlah">Rp 150.000.000</td>
+                        <td data-label="Aksi">
+                            <button class="btn-action btn-edit" title="Edit">
+                                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                            </button>
+                            <button class="btn-action btn-delete" onclick="deleteItem(this)" title="Hapus">
+                                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td data-label="No">2</td>
+                        <td data-label="Nama Item">Pekerjaan Tanah</td>
+                        <td data-label="Satuan">m³</td>
+                        <td data-label="Volume">2.500</td>
+                        <td class="currency" data-label="Harga">Rp 120.000</td>
+                        <td class="currency" data-label="Jumlah">Rp 300.000.000</td>
+                        <td data-label="Aksi">
+                            <button class="btn-action btn-edit" title="Edit">
+                                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                            </button>
+                            <button class="btn-action btn-delete" onclick="deleteItem(this)" title="Hapus">
+                                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td data-label="No">3</td>
+                        <td data-label="Nama Item">Pekerjaan Lapis Pondasi</td>
+                        <td data-label="Satuan">m²</td>
+                        <td data-label="Volume">35.000</td>
+                        <td class="currency" data-label="Harga">Rp 85.000</td>
+                        <td class="currency" data-label="Jumlah">Rp 2.975.000.000</td>
+                        <td data-label="Aksi">
+                            <button class="btn-action btn-edit" title="Edit">
+                                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                            </button>
+                            <button class="btn-action btn-delete" onclick="deleteItem(this)" title="Hapus">
+                                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td data-label="No">4</td>
+                        <td data-label="Nama Item">Pekerjaan Lapis Permukaan</td>
+                        <td data-label="Satuan">m²</td>
+                        <td data-label="Volume">31.500</td>
+                        <td class="currency" data-label="Harga">Rp 65.000</td>
+                        <td class="currency" data-label="Jumlah">Rp 2.047.500.000</td>
+                        <td data-label="Aksi">
+                            <button class="btn-action btn-edit" title="Edit">
+                                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                            </button>
+                            <button class="btn-action btn-delete" onclick="deleteItem(this)" title="Hapus">
+                                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Addendum -->
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title">Addendum</h2>
+                <a href="tambah_addendum.html" class="btn-tambah">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                    </svg>
+                    Tambah Addendum
+                </a>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Nomor Addendum</th>
+                        <th>Tanggal Addendum</th>
+                        <th>Tanggal Mulai</th>
+                        <th>Tanggal Akhir</th>
+                        <th>Nilai Addendum</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td data-label="No">1</td>
+                        <td data-label="Nomor">ADD/001/2024</td>
+                        <td data-label="Tanggal Addendum">20 Feb 2024</td>
+                        <td data-label="Tanggal Mulai">21 Feb 2024</td>
+                        <td data-label="Tanggal Akhir">30 Apr 2024</td>
+                        <td class="currency" data-label="Nilai">Rp 500.000.000</td>
+                        <td data-label="Aksi">
+                            <button class="btn-action btn-edit" title="Edit">
+                                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                            </button>
+                            <button class="btn-action btn-delete" onclick="deleteItem(this)" title="Hapus">
+                                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pembayaran -->
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title">Pembayaran</h2>
+                <a href="tambah_pembayaran.html" class="btn-tambah">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                    </svg>
+                    Tambah Pembayaran
+                </a>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Jenis</th>
+                        <th>Nomor SP2D</th>
+                        <th>Tanggal</th>
+                        <th>Nilai</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td data-label="No">1</td>
+                        <td data-label="Jenis">Uang Muka</td>
+                        <td data-label="Nomor SP2D">SP2D/001/2024</td>
+                        <td data-label="Tanggal">25 Jan 2024</td>
+                        <td class="currency" data-label="Nilai">Rp 1.375.000.000</td>
+                        <td data-label="Aksi">
+                            <button class="btn-action btn-edit" title="Edit">
+                                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                            </button>
+                            <button class="btn-action btn-delete" onclick="deleteItem(this)" title="Hapus">
+                                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td data-label="No">2</td>
+                        <td data-label="Jenis">Termin 1</td>
+                        <td data-label="Nomor SP2D">SP2D/002/2024</td>
+                        <td data-label="Tanggal">15 Mar 2024</td>
+                        <td class="currency" data-label="Nilai">Rp 1.375.000.000</td>
+                        <td data-label="Aksi">
+                            <button class="btn-action btn-edit" title="Edit">
+                                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                            </button>
+                            <button class="btn-action btn-delete" onclick="deleteItem(this)" title="Hapus">
+                                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Serah Terima -->
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title">Serah Terima</h2>
+                <a href="tambah_serah_terima.html" class="btn-tambah">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                    </svg>
+                    Tambah Serah Terima
+                </a>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Jenis</th>
+                        <th>Nomor Serah Terima</th>
+                        <th>Tanggal</th>
+                        <th>Keterangan</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="6" class="no-data">Belum ada serah terima</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Data Pemeriksaan Pekerjaan -->
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title">Pemeriksaan Pekerjaan</h2>
+            </div>
+            
+            <table class="pemeriksaan-table">
+                <tbody>
+                    <tr>
+                        <td class="pemeriksaan-label">Dokumen Pendukung</td>
+                        <td class="pemeriksaan-value">
+                            <a href="pemeriksaan_dokumen.html" class="doc-link-table">
+                                <span id="docUploadedCount">12</span> / <span id="docTotalCount">15</span> dokumen
+                                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="link-icon">
+                                    <path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/>
+                                </svg>
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="pemeriksaan-label">Pekerjaan Diselesaikan Sesuai Periode</td>
+                        <td class="pemeriksaan-value">
+                            <div class="switch-container-table">
+                                <label class="switch-table">
+                                    <input type="checkbox" id="switch_periode">
+                                    <span class="slider-table"></span>
+                                </label>
+                                <span class="switch-label-text" id="label_periode">Belum Dicek</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="pemeriksaan-label">Nilai Pembayaran Sesuai Kontrak</td>
+                        <td class="pemeriksaan-value">
+                            <span class="payment-info-table">Terbayarkan <strong>Rp 2.750.000.000</strong> dari <strong>Rp 5.500.000.000</strong></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="pemeriksaan-label">Belanja Dicatat Periode yang Tepat</td>
+                        <td class="pemeriksaan-value">
+                            <div class="switch-container-table">
+                                <label class="switch-table">
+                                    <input type="checkbox" id="switch_periode_belanja">
+                                    <span class="slider-table"></span>
+                                </label>
+                                <span class="switch-label-text" id="label_periode_belanja">Belum Dicek</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="pemeriksaan-label">Klasifikasi Akun Belanja Sesuai</td>
+                        <td class="pemeriksaan-value">
+                            <div class="switch-container-table">
+                                <label class="switch-table">
+                                    <input type="checkbox" id="switch_klasifikasi">
+                                    <span class="slider-table"></span>
+                                </label>
+                                <span class="switch-label-text" id="label_klasifikasi">Belum Dicek</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="pemeriksaan-label">Pembayaran Retensi Didukung Bank Garansi</td>
+                        <td class="pemeriksaan-value">
+                            <div class="garansi-table-section">
+                                <label for="bank_garansi" class="file-upload-label-table">
+                                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z"/>
+                                    </svg>
+                                    Upload
+                                </label>
+                                <input type="file" id="bank_garansi" name="bank_garansi" accept=".pdf,.doc,.docx" onchange="handleBankGaransi(this)">
+                                <span id="garansi_file_name" class="file-name-table"></span>
+                                <div id="garansi_info" class="file-info-table" style="display: none;">
+                                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                                    </svg>
+                                    OK
+                                </div>
+                                <input type="text" id="garansi_jumlah" placeholder="Rp 0" class="currency-input-table" onkeyup="formatCurrency(this)">
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <!-- Data Pemeriksaan Fisik -->
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title">Pemeriksaan Fisik</h2>
+                <a href="rekapan_pemeriksaan.html" class="btn-tambah">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                    </svg>
+                    Tambah Pemeriksaan Fisik
+                </a>
+            </div>
+            <p style="color: #999; font-size: 14px; text-align: center; padding: 30px;">
+                Data pemeriksaan fisik belum tersedia. Klik tombol di atas untuk menambah data pemeriksaan fisik.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        function deleteItem(btn) {
+            Swal.fire({
+                title: 'Anda yakin?',
+                text: 'Data yang dihapus tidak dapat dikembalikan!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#e74c3c',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var row = btn.closest('tr');
+                    row.remove();
+                    Swal.fire(
+                        'Terhapus!',
+                        'Data berhasil dihapus.',
+                        'success'
+                    );
+                }
+            });
+        }
+
+        function uploadFile(input, docId) {
+            var file = input.files[0];
+            if (file) {
+                var docNum = docId.replace('doc', '');
+                var nameSpan = document.getElementById('name' + docNum);
+                if (nameSpan) nameSpan.textContent = file.name;
+                
+                var checkbox = document.getElementById(docId);
+                if (checkbox) {
+                    checkbox.checked = true;
+                    var statusSpan = checkbox.parentElement.querySelector('.document-status');
+                    if (statusSpan) {
+                        statusSpan.textContent = 'Sudah Upload';
+                        statusSpan.classList.remove('status-belum');
+                        statusSpan.classList.add('status-sudah');
+                    }
+                }
+                
+                updateDocCount();
+                
+                Swal.fire(
+                    'Berhasil!',
+                    'Dokumen berhasil diupload.',
+                    'success'
+                );
+            }
+        }
+
+        function handleBankGaransi(input) {
+            var file = input.files[0];
+            if (file) {
+                document.getElementById('garansi_file_name').textContent = file.name;
+                document.getElementById('garansi_info').style.display = 'flex';
+                Swal.fire(
+                    'Berhasil!',
+                    'Bank garansi berhasil diupload.',
+                    'success'
+                );
+            }
+        }
+
+        function formatCurrency(input) {
+            var value = input.value.replace(/[^0-9]/g, '');
+            if (value) {
+                value = parseInt(value).toLocaleString('id-ID');
+            }
+            input.value = value ? 'Rp ' + value : '';
+        }
+
+        // Handle switch toggle changes
+        document.addEventListener('DOMContentLoaded', function() {
+            var switchPeriode = document.getElementById('switch_periode');
+            var switchPeriodeBelanja = document.getElementById('switch_periode_belanja');
+            var switchKlasifikasi = document.getElementById('switch_klasifikasi');
+            
+            if (switchPeriode) {
+                switchPeriode.addEventListener('change', function() {
+                    document.getElementById('label_periode').textContent = this.checked ? 'Ya' : 'Tidak';
+                });
+            }
+            
+            if (switchPeriodeBelanja) {
+                switchPeriodeBelanja.addEventListener('change', function() {
+                    document.getElementById('label_periode_belanja').textContent = this.checked ? 'Ya' : 'Tidak';
+                });
+            }
+            
+            if (switchKlasifikasi) {
+                switchKlasifikasi.addEventListener('change', function() {
+                    document.getElementById('label_klasifikasi').textContent = this.checked ? 'Ya' : 'Tidak';
+                });
+            }
+        });
+
+        function updateDocCount() {
+            var count = 0;
+            for (var i = 1; i <= 15; i++) {
+                var checkbox = document.getElementById('doc' + i);
+                if (checkbox && checkbox.checked) count++;
+            }
+            var countEl = document.getElementById('docCount');
+            if (countEl) {
+                countEl.textContent = count + ' dari 15 dokumen terupload';
+            }
+            localStorage.setItem('docCount', count);
+        }
+
+        window.onload = function() {
+            var savedCount = localStorage.getItem('docCount');
+            if (savedCount) {
+                var countEl = document.getElementById('docCount');
+                if (countEl) {
+                    countEl.textContent = savedCount + ' dari 15 dokumen terupload';
+                }
+            }
+        };
+    </script>
+</body>
+</html>
