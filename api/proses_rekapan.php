@@ -461,6 +461,37 @@ function handleCreateWithImage() {
             $data['id_sub_pekerjaan'] = $id_sub_pekerjaan;
         }
         
+        // Server-side auto-validation: Set status_kesesuaian based on road type and average thickness
+        $jenis = $_POST['jenis'] ?? '';
+        $tebal1 = isset($_POST['tebal1']) ? floatval($_POST['tebal1']) : 0;
+        $tebal2 = isset($_POST['tebal2']) ? floatval($_POST['tebal2']) : 0;
+        $tebal3 = isset($_POST['tebal3']) ? floatval($_POST['tebal3']) : 0;
+        $tebal4 = isset($_POST['tebal4']) ? floatval($_POST['tebal4']) : 0;
+        
+        // Calculate average thickness from non-zero values
+        $thicknessValues = array_filter([$tebal1, $tebal2, $tebal3, $tebal4], function($v) { return $v > 0; });
+        $avgThickness = count($thicknessValues) > 0 ? array_sum($thicknessValues) / count($thicknessValues) : 0;
+        
+        // Auto-set status_kesesuaian based on road type and average thickness
+        if ($jenis === 'AC-WC' || $jenis === 'AC-BC') {
+            $statusKesesuaian = '';
+            
+            if ($jenis === 'AC-WC') {
+                // AC-WC: if avg thickness > 3.9 cm → "sesuai", if ≤ 3.9 cm → "tidak_sesuai"
+                $statusKesesuaian = ($avgThickness > 3.9) ? 'sesuai' : 'tidak_sesuai';
+            } elseif ($jenis === 'AC-BC') {
+                // AC-BC: if avg thickness > 5.9 cm → "sesuai", if ≤ 5.9 cm → "tidak_sesuai"
+                $statusKesesuaian = ($avgThickness > 5.9) ? 'sesuai' : 'tidak_sesuai';
+            }
+            
+            // Only override if statusKesesuaian is not manually set by user
+            if (!isset($_POST['statusKesesuaian']) || $_POST['statusKesesuaian'] === '') {
+                $data['status_kesesuaian'] = $statusKesesuaian;
+            }
+            
+            error_log("Server-side validation: Jenis=$jenis, AvgThickness=$avgThickness, Status=$statusKesesuaian");
+        }
+        
         // Handle image uploads
         $uploadDir = __DIR__ . '/../dokumen_pemeriksaan/';
         
