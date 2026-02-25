@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kertas Kerja Jalan</title>
+    <link rel="icon" href="img/logo.ico">
+    <title>KKP Willybrodus</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
     <style>
@@ -73,6 +74,42 @@
             width: 20px;
             height: 20px;
             fill: #fff;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: #f5f6fa;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 8px 15px;
+            width: 300px;
+            transition: all 0.3s ease;
+        }
+
+        .search-box:focus-within {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .search-box svg {
+            width: 20px;
+            height: 20px;
+            fill: #999;
+            margin-right: 10px;
+        }
+
+        .search-box input {
+            border: none;
+            background: transparent;
+            outline: none;
+            font-size: 14px;
+            width: 100%;
+            color: #333;
+        }
+
+        .search-box input::placeholder {
+            color: #aaa;
         }
 
         .job-name-cell {
@@ -283,6 +320,14 @@
                 Tambah Pekerjaan
             </button>
         </div>
+        <div class="header">
+            <div class="search-box">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                </svg>
+                <input type="text" id="searchInput" placeholder="Cari data..." oninput="filterData()">
+            </div>
+        </div>
 
         <div class="table-container">
             <table>
@@ -314,6 +359,39 @@
             return urlParams.get('id_entitas') || '';
         }
 
+        // Store original data for filtering
+        let allPekerjaanData = [];
+
+        // Filter data based on search input
+        function filterData() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+            
+            if (!searchTerm) {
+                renderPekerjaan(allPekerjaanData);
+                return;
+            }
+            
+            const filteredData = allPekerjaanData.filter(pekerjaan => {
+                // Search in multiple fields
+                const searchableFields = [
+                    pekerjaan.nama_pekerjaan || '',
+                    pekerjaan.nomor_kontrak || '',
+                    pekerjaan.nama_penyedia || '',
+                    pekerjaan.nama_akun_belanja || '',
+                    pekerjaan.inisial_akun_belanja || '',
+                    pekerjaan.skpd || '',
+                    pekerjaan.tanggal_kontrak || '',
+                    pekerjaan.tanggalkontrak || ''
+                ];
+                
+                return searchableFields.some(field => 
+                    field.toString().toLowerCase().includes(searchTerm)
+                );
+            });
+            
+            renderPekerjaan(filteredData);
+        }
+
         // Load pekerjaan from database
         async function loadPekerjaan() {
             try {
@@ -337,7 +415,8 @@
                 const result = await response.json();
                 
                 if (result.success) {
-                    renderPekerjaan(result.data || []);
+                    allPekerjaanData = result.data || [];
+                    renderPekerjaan(allPekerjaanData);
                 }
             } catch (error) {
                 console.error('Error loading pekerjaan:', error);

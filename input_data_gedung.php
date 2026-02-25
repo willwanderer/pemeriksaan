@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Input Data Gedung</title>
+    <link rel="icon" href="img/logo.ico">
+    <title>KKP Willybrodus</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background: #f5f6fa; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
