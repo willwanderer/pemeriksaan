@@ -970,14 +970,14 @@
                 console.error('Error fetching existing data:', err);
             }
             
-            // Show SweetAlert loading animation
-            let swalLoading = Swal.fire({
+            // Show SweetAlert loading animation with spinner
+            Swal.fire({
                 title: 'Memperbarui Data...',
-                html: 'Mohon tunggu sebentar',
+                text: 'Mohon tunggu sebentar',
                 allowOutsideClick: false,
                 allowEscapeKey: false,
                 showConfirmButton: false,
-                didOpen: () => {
+                willOpen: () => {
                     Swal.showLoading();
                 }
             });
@@ -990,7 +990,7 @@
                 const result = await response.json();
                 
                 // Close SweetAlert loading
-                Swal.close(swalLoading);
+                Swal.close();
                 
                 if (result.success) {
                     Swal.fire({
@@ -1011,7 +1011,7 @@
             } catch (error) {
                 console.error('Error:', error);
                 // Close SweetAlert loading
-                Swal.close(swalLoading);
+                Swal.close();
                 Swal.fire('Error', 'Terjadi kesalahan saat menyimpan data', 'error');
             }
         });

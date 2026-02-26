@@ -1234,14 +1234,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             formDataToSend.set('posisi_jalan', posisiJalanValue);
             console.log('posisi_jalan value:', posisiJalanValue);
             
-            // Show SweetAlert loading animation
-            let swalLoading = Swal.fire({
+            // Show SweetAlert loading animation with spinner
+            Swal.fire({
                 title: 'Menyimpan Data...',
-                html: 'Mohon tunggu sebentar',
+                text: 'Mohon tunggu sebentar',
                 allowOutsideClick: false,
                 allowEscapeKey: false,
                 showConfirmButton: false,
-                didOpen: () => {
+                willOpen: () => {
                     Swal.showLoading();
                 }
             });
@@ -1259,7 +1259,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Hide loading overlay
                 loadingOverlay.classList.remove('active');
                 // Close SweetAlert loading
-                Swal.close(swalLoading);
+                Swal.close();
                 
                 if (result.success) {
                     // Store current STA value for potential reuse
@@ -1324,7 +1324,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Hide loading overlay on error
                 loadingOverlay.classList.remove('active');
                 // Close SweetAlert loading
-                Swal.close(swalLoading);
+                Swal.close();
                 Swal.fire('Error', 'Terjadi kesalahan saat menyimpan data. Buka console untuk detail.', 'error');
             }
         });
