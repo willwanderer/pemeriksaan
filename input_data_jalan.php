@@ -117,6 +117,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
+        /* Custom spinner for fallback loading */
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
         * {
             margin: 0;
             padding: 0;
@@ -516,8 +530,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <label for="jenis">Jenis Jalan</label>
                     <select id="jenis" name="jenis">
                         <option value="">Pilih Jenis Jalan</option>
-                        <option value="AC-WC">AC-WC (Asphalt Concrete - Wearing Course)</option>
-                        <option value="AC-BC">AC-BC (Asphalt Concrete - Binder Course)</option>
+                        <option value="AC-WC">AC-WC (Wearing Course)</option>
+                        <option value="AC-BC">AC-BC (Binder Course)</option>
                         <option value="LPA">LPA (Lapisan Pondasi Agregat)</option>
                     </select>
                 </div>
@@ -1085,12 +1099,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             });
         });
         
+        // Function to parse decimal value with comma support (Indonesian format)
+        function parseDecimalWithComma(value) {
+            if (!value) return 0;
+            
+            // Handle range format like "4,0/6,0" - take the first value
+            if (value.includes('/')) {
+                value = value.split('/')[0];
+            }
+            
+            // Replace comma with dot for proper parsing
+            // First, handle cases like "3,5" -> "3.5" or "35" -> "3.5"
+            // Check if there's a comma that should be a decimal separator
+            if (value.includes(',')) {
+                // If comma exists, try to convert it to dot
+                // Handle "3,5" -> 3.5, "35" (no comma) stays as is
+                value = value.replace(',', '.');
+            } else if (value.length > 1 && !value.includes('.')) {
+                // If no decimal point and value is longer than 1 digit,
+                // assume last digit should be decimal (e.g., "35" -> "3.5")
+                // But this only applies to masked inputs
+                // Let's be more conservative - only do this if value looks like it needs conversion
+                const lastChar = value.slice(-1);
+                const rest = value.slice(0, -1);
+                // Only convert if it looks like "35" format (2 digits)
+                if (/^\d{2}$/.test(value)) {
+                    value = rest + '.' + lastChar;
+                }
+            }
+            
+            return parseFloat(value) || 0;
+        }
+        
         // Auto-fill Status Kesesuaian based on road type and average thickness
         function calculateAverageThickness() {
-            const tebal1 = parseFloat(document.getElementById('tebal1').value) || 0;
-            const tebal2 = parseFloat(document.getElementById('tebal2').value) || 0;
-            const tebal3 = parseFloat(document.getElementById('tebal3').value) || 0;
-            const tebal4 = parseFloat(document.getElementById('tebal4').value) || 0;
+            const tebal1 = parseDecimalWithComma(document.getElementById('tebal1').value);
+            const tebal2 = parseDecimalWithComma(document.getElementById('tebal2').value);
+            const tebal3 = parseDecimalWithComma(document.getElementById('tebal3').value);
+            const tebal4 = parseDecimalWithComma(document.getElementById('tebal4').value);
             
             // Count non-zero values
             const values = [tebal1, tebal2, tebal3, tebal4].filter(v => v > 0);
@@ -1210,6 +1256,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             });
             
+            // Add validation to detect comma in numeric fields
+            const numericFieldsWithComma = ['tebal1', 'tebal2', 'tebal3', 'tebal4', 'lebarjalan'];
+            let commaWarning = '';
+            
+            numericFieldsWithComma.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (field && field.value && field.value.includes(',')) {
+                    // Check if it's a valid comma decimal format (e.g., "4,0" or "4,00")
+                    const commaPattern = /^\d+,\d+$/;
+                    if (commaPattern.test(field.value)) {
+                        console.log('Detected comma decimal in ' + fieldId + ':', field.value);
+                    }
+                }
+            });
+            
             // Show warning if there are empty fields, but still allow submission
             let warningMessage = '';
             if (emptyFields.length > 0) {
@@ -1234,16 +1295,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             formDataToSend.set('posisi_jalan', posisiJalanValue);
             console.log('posisi_jalan value:', posisiJalanValue);
             
-            // Show SweetAlert loading animation with spinner
+            // Show SweetAlert loading animation with custom GIF
             Swal.fire({
                 title: 'Menyimpan Data...',
-                text: 'Mohon tunggu sebentar',
+                html: '<img src="img/load.gif" alt="Loading">',
                 allowOutsideClick: false,
                 allowEscapeKey: false,
-                showConfirmButton: false,
-                willOpen: () => {
-                    Swal.showLoading();
-                }
+                showConfirmButton: false
             });
             
             try {
@@ -1256,8 +1314,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 const result = await response.json();
                 console.log('Response result:', result);
                 
-                // Hide loading overlay
-                loadingOverlay.classList.remove('active');
                 // Close SweetAlert loading
                 Swal.close();
                 
@@ -1321,8 +1377,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             } catch (error) {
                 console.error('Error:', error);
-                // Hide loading overlay on error
-                loadingOverlay.classList.remove('active');
                 // Close SweetAlert loading
                 Swal.close();
                 Swal.fire('Error', 'Terjadi kesalahan saat menyimpan data. Buka console untuk detail.', 'error');

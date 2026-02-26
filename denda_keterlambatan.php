@@ -8,6 +8,20 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
     <style>
+        /* Custom spinner for fallback loading */
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
         /* Global Styles */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background: #f5f6fa; min-height: 100vh; padding: 20px; }
@@ -383,11 +397,11 @@
             
             try {
                 Swal.fire({
-                    title: 'Menyimpan...',
+                    title: 'Menyimpan Data...',
+                    html: '<img src="img/load.gif" alt="Loading">',
                     allowOutsideClick: false,
-                    didOpen: () => {
-                        Swal.showLoading();
-                    }
+                    allowEscapeKey: false,
+                    showConfirmButton: false
                 });
                 
                 const response = await fetch('api/proses_pemeriksaan_pekerjaan.php', {

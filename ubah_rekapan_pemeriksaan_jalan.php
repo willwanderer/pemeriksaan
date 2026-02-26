@@ -9,6 +9,20 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
+        /* Custom spinner for fallback loading */
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
         * {
             margin: 0;
             padding: 0;
@@ -970,16 +984,13 @@
                 console.error('Error fetching existing data:', err);
             }
             
-            // Show SweetAlert loading animation with spinner
+            // Show SweetAlert loading animation with custom GIF
             Swal.fire({
                 title: 'Memperbarui Data...',
-                text: 'Mohon tunggu sebentar',
+                html: '<img src="img/load.gif" alt="Loading">',
                 allowOutsideClick: false,
                 allowEscapeKey: false,
-                showConfirmButton: false,
-                willOpen: () => {
-                    Swal.showLoading();
-                }
+                showConfirmButton: false
             });
             
             try {
@@ -993,17 +1004,62 @@
                 Swal.close();
                 
                 if (result.success) {
+                    // Store current STA value for potential reuse
+                    const currentSTA = document.getElementById('sta').value;
+                    
+                    // Show popup with two options
                     Swal.fire({
                         title: 'Berhasil!',
-                        text: 'Data berhasil diperbarui',
-                        icon: 'success'
-                    }).then(() => {
-                        let redirectUrl = 'rekapan_pemeriksaan_jij.php?id_pekerjaan=' + idPekerjaan;
-                        const urlSub = urlParams.get('id_sub');
-                        if (urlSub) {
-                            redirectUrl += '&id_sub=' + urlSub;
+                        html: 'Data berhasil diperbarui<br><br>Pilih opsi untuk melanjutkan:',
+                        icon: 'success',
+                        showCancelButton: true,
+                        confirmButtonText: 'Lanjut ke STA Berikutnya',
+                        cancelButtonText: 'Masih di STA saat ini',
+                        reverseButtons: false
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // User clicked "Lanjut ke STA Berikutnya" - increment STA by 100
+                            let newSTA = currentSTA;
+                            if (currentSTA) {
+                                // Parse STA format (e.g., "0+100" or "1+500")
+                                const staMatch = currentSTA.match(/^(\d+)\+(\d+)$/);
+                                if (staMatch) {
+                                    const prefix = parseInt(staMatch[1], 10);
+                                    let suffix = parseInt(staMatch[2], 10);
+                                    suffix += 100;
+                                    
+                                    // Handle overflow (e.g., 0+900 + 100 = 1+000)
+                                    if (suffix >= 1000) {
+                                        prefix += Math.floor(suffix / 1000);
+                                        suffix = suffix % 1000;
+                                    }
+                                    newSTA = prefix + '+' + suffix.toString().padStart(3, '0');
+                                } else {
+                                    // Try parsing just a number
+                                    const numMatch = currentSTA.match(/^(\d+)$/);
+                                    if (numMatch) {
+                                        newSTA = (parseInt(numMatch[1], 10) + 100).toString();
+                                    }
+                                }
+                            }
+                            console.log('Incrementing STA:', currentSTA, '->', newSTA);
+                            
+                            // Redirect to form with new STA
+                            let redirectUrl = 'input_data_jalan.php?id_pekerjaan=' + idPekerjaan;
+                            const urlSub = urlParams.get('id_sub');
+                            if (urlSub) {
+                                redirectUrl += '&id_sub_pekerjaan=' + urlSub;
+                            }
+                            if (newSTA) {
+                                redirectUrl += '&sta=' + encodeURIComponent(newSTA);
+                            }
+                            window.location.href = redirectUrl;
+                        } else if (result.dismiss === Swal.DismissReason.cancel) {
+                            // User clicked "Masih di STA saat ini" - stay on same page
+                            console.log('Keeping same STA:', currentSTA);
+                            // Optionally reload the page to refresh data
+                            location.reload();
                         }
-                        window.location.href = redirectUrl;
                     });
                 } else {
                     Swal.fire('Gagal', result.message || 'Gagal menyimpan data', 'error');
