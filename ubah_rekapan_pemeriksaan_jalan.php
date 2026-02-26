@@ -1004,62 +1004,14 @@
                 Swal.close();
                 
                 if (result.success) {
-                    // Store current STA value for potential reuse
-                    const currentSTA = document.getElementById('sta').value;
-                    
-                    // Show popup with two options
                     Swal.fire({
                         title: 'Berhasil!',
-                        html: 'Data berhasil diperbarui<br><br>Pilih opsi untuk melanjutkan:',
+                        text: 'Data berhasil diperbarui',
                         icon: 'success',
-                        showCancelButton: true,
-                        confirmButtonText: 'Lanjut ke STA Berikutnya',
-                        cancelButtonText: 'Masih di STA saat ini',
-                        reverseButtons: false
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            // User clicked "Lanjut ke STA Berikutnya" - increment STA by 100
-                            let newSTA = currentSTA;
-                            if (currentSTA) {
-                                // Parse STA format (e.g., "0+100" or "1+500")
-                                const staMatch = currentSTA.match(/^(\d+)\+(\d+)$/);
-                                if (staMatch) {
-                                    const prefix = parseInt(staMatch[1], 10);
-                                    let suffix = parseInt(staMatch[2], 10);
-                                    suffix += 100;
-                                    
-                                    // Handle overflow (e.g., 0+900 + 100 = 1+000)
-                                    if (suffix >= 1000) {
-                                        prefix += Math.floor(suffix / 1000);
-                                        suffix = suffix % 1000;
-                                    }
-                                    newSTA = prefix + '+' + suffix.toString().padStart(3, '0');
-                                } else {
-                                    // Try parsing just a number
-                                    const numMatch = currentSTA.match(/^(\d+)$/);
-                                    if (numMatch) {
-                                        newSTA = (parseInt(numMatch[1], 10) + 100).toString();
-                                    }
-                                }
-                            }
-                            console.log('Incrementing STA:', currentSTA, '->', newSTA);
-                            
-                            // Redirect to form with new STA
-                            let redirectUrl = 'input_data_jalan.php?id_pekerjaan=' + idPekerjaan;
-                            const urlSub = urlParams.get('id_sub');
-                            if (urlSub) {
-                                redirectUrl += '&id_sub_pekerjaan=' + urlSub;
-                            }
-                            if (newSTA) {
-                                redirectUrl += '&sta=' + encodeURIComponent(newSTA);
-                            }
-                            window.location.href = redirectUrl;
-                        } else if (result.dismiss === Swal.DismissReason.cancel) {
-                            // User clicked "Masih di STA saat ini" - stay on same page
-                            console.log('Keeping same STA:', currentSTA);
-                            // Optionally reload the page to refresh data
-                            location.reload();
-                        }
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        // Redirect back to the list page
+                        window.location.href = 'rekapan_pemeriksaan_jij.php?id_pekerjaan=' + idPekerjaan + (urlParams.get('id_sub') ? '&id_sub=' + urlParams.get('id_sub') : '');
                     });
                 } else {
                     Swal.fire('Gagal', result.message || 'Gagal menyimpan data', 'error');
