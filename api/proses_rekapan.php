@@ -287,6 +287,7 @@ function handleUpdateWithImage() {
             'latitude' => 'latitude',
             'longitude' => 'longitude',
             'jenis' => 'jenis_jalan',
+            'posisi_jalan' => 'posisi_jalan',
             'tebal1' => 'tebal_1',
             'tebal2' => 'tebal_2',
             'tebal3' => 'tebal_3',
@@ -308,7 +309,14 @@ function handleUpdateWithImage() {
         
         foreach ($fieldMappings as $formField => $dbField) {
             if (isset($_POST[$formField]) && $_POST[$formField] !== '') {
-                $data[$dbField] = $_POST[$formField];
+                $value = $_POST[$formField];
+                
+                // Convert Indonesian decimal separator (comma) to dot for numeric fields
+                if (in_array($dbField, ['tebal_1', 'tebal_2', 'tebal_3', 'tebal_4', 'lebar_jalan', 'lebar_bahu_kiri', 'lebar_bahu_kanan', 'tebal_bahu_kiri', 'tebal_bahu_kanan'])) {
+                    $value = str_replace(',', '.', $value);
+                }
+                
+                $data[$dbField] = $value;
             }
         }
         
@@ -406,6 +414,7 @@ function handleCreateWithImage() {
             'latitude' => 'latitude',
             'longitude' => 'longitude',
             'jenis' => 'jenis_jalan',
+            'posisi_jalan' => 'posisi_jalan',
             'tebal1' => 'tebal_1',
             'tebal2' => 'tebal_2',
             'tebal3' => 'tebal_3',
@@ -447,9 +456,13 @@ function handleCreateWithImage() {
                 
                 // Validate other numeric fields - skip invalid values
                 if (in_array($dbField, ['tebal_1', 'tebal_2', 'tebal_3', 'tebal_4', 'lebar_jalan', 'lebar_bahu_kiri', 'lebar_bahu_kanan', 'tebal_bahu_kiri', 'tebal_bahu_kanan'])) {
-                    if (!is_numeric($value)) {
+                    // Convert Indonesian decimal separator (comma) to dot for validation
+                    $valueForCheck = str_replace(',', '.', $value);
+                    if (!is_numeric($valueForCheck)) {
                         continue; // Skip invalid numeric values
                     }
+                    // Use the converted value
+                    $value = $valueForCheck;
                 }
                 
                 $data[$dbField] = $value;

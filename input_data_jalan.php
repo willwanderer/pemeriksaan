@@ -1,3 +1,110 @@
+<?php
+// PHP Logic to handle form submission
+$message = '';
+$messageType = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Include database connection
+    include 'includes/db_connect.php';
+    
+    // Get form data
+    $id_pekerjaan = $_POST['id_pekerjaan'] ?? '';
+    $id_sub_pekerjaan = $_POST['id_sub_pekerjaan'] ?? '';
+    $sta = $_POST['sta'] ?? '';
+    $STA_type = $_POST['STA_type'] ?? 'STA';
+    $jenis = $_POST['jenis'] ?? '';
+    $posisi_jalan = $_POST['posisi_jalan'] ?? 'Tengah';
+    
+    // Convert decimal format (comma to dot) for database
+    $tebal1 = isset($_POST['tebal1']) ? str_replace(',', '.', $_POST['tebal1']) : null;
+    $tebal2 = isset($_POST['tebal2']) ? str_replace(',', '.', $_POST['tebal2']) : null;
+    $tebal3 = isset($_POST['tebal3']) ? str_replace(',', '.', $_POST['tebal3']) : null;
+    $tebal4 = isset($_POST['tebal4']) ? str_replace(',', '.', $_POST['tebal4']) : null;
+    $lebarjalan = isset($_POST['lebarjalan']) ? str_replace(',', '.', $_POST['lebarjalan']) : null;
+    
+    $lebarkiri = $_POST['lebarkiri'] ?? null;
+    $tekalkiri = $_POST['tekalkiri'] ?? null;
+    $lebarkanan = $_POST['lebarkanan'] ?? null;
+    $tekalkanan = $_POST['tekalkanan'] ?? null;
+    $statusKesesuaian = $_POST['statusKesesuaian'] ?? 'sesuai';
+    $catatan = $_POST['catatan'] ?? '';
+    $latitude = $_POST['latitude'] ?? null;
+    $longitude = $_POST['longitude'] ?? null;
+    
+    // Validate required fields
+    $errors = [];
+    
+    if (empty($id_pekerjaan)) {
+        $errors[] = 'ID Pekerjaan wajib diisi';
+    }
+    
+    if (empty($sta)) {
+        $errors[] = 'STA wajib diisi';
+    }
+    
+    if (empty($jenis)) {
+        $errors[] = 'Jenis Jalan wajib diisi';
+    }
+    
+    // Validate decimal format for tebal and lebar fields
+    $decimalPattern = '/^[0-9]?[.]?[0-9]{0,2}$/';
+    
+    
+    if (empty($errors)) {
+        // Insert data into database
+        try {
+            $conn = getConnection();
+            
+            $sql = "INSERT INTO rekapan_pemeriksaan_jalan 
+                    (id_pekerjaan, id_sub_pekerjaan, sta, STA_type, jenis_jalan, posisi_jalan, tebal_1, tebal_2, tebal_3, tebal_4, 
+                     lebar_jalan, lebar_bahu_kiri, tebal_bahu_kiri, lebar_bahu_kanan, tebal_bahu_kanan, status_kesesuaian, 
+                     catatan, latitude, longitude, created_at) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
+            
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("issssssssssssssssd", 
+                $id_pekerjaan, 
+                $id_sub_pekerjaan, 
+                $sta, 
+                $STA_type, 
+                $jenis, 
+                $posisi_jalan,
+                $tebal1, 
+                $tebal2, 
+                $tebal3, 
+                $tebal4, 
+                $lebarjalan, 
+                $lebarkiri, 
+                $tekalkiri, 
+                $lebarkanan, 
+                $tekalkanan, 
+                $statusKesesuaian, 
+                $catatan, 
+                $latitude,
+                $longitude
+            );
+            
+            if ($stmt->execute()) {
+                $message = 'Data jalan berhasil disimpan!';
+                $messageType = 'success';
+            } else {
+                $message = 'Gagal menyimpan data: ' . $stmt->error;
+                $messageType = 'error';
+            }
+            
+            $stmt->close();
+            $conn->close();
+            
+        } catch (Exception $e) {
+            $message = 'Error: ' . $e->getMessage();
+            $messageType = 'error';
+        }
+    } else {
+        $message = implode('<br>', $errors);
+        $messageType = 'error';
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -252,9 +359,105 @@
             height: 24px;
             fill: #333;
         }
+        
+        /* Radio Button Group Styles */
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            margin-top: 8px;
+        }
+        
+        .radio-label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 8px 16px;
+            border: 2px solid #e1e1e1;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .radio-label:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+        
+        .radio-label input[type="radio"] {
+            margin-right: 8px;
+            width: 18px;
+            height: 18px;
+            accent-color: #667eea;
+        }
+        
+        .radio-label input[type="radio"]:checked + .radio-text {
+            color: #667eea;
+            font-weight: 600;
+        }
+        
+        .radio-label:has(input[type="radio"]:checked) {
+            border-color: #667eea;
+            background: #f0f2ff;
+        }
+        
+        .radio-text {
+            font-size: 14px;
+            color: #333;
+        }
+        
+        /* Spinner and Loading Styles */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .loading-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            color: white;
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
     </style>
 </head>
 <body>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div style="text-align: center;">
+            <div class="loading-spinner"></div>
+            <div class="loading-text" id="loadingText">Menyimpan data...</div>
+        </div>
+    </div>
+    
     <button class="back-btn" onclick="window.location.href='rekapan_pemeriksaan_jij.php?id_pekerjaan=' + new URLSearchParams(window.location.search).get('id_pekerjaan') + (new URLSearchParams(window.location.search).get('id_sub_pekerjaan') ? '&id_sub=' + new URLSearchParams(window.location.search).get('id_sub_pekerjaan') : '')">
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
@@ -309,7 +512,7 @@
                 </div>
             </div>
             <div class="form-row">
-                <div class="form-group">
+                <div class="form-group" style="display:none;">
                     <label for="STA_type">Tipe STA</label>
                     <select id="STA_type" name="STA_type">
                         <option value="STA" selected>STA</option>
@@ -325,32 +528,45 @@
                         <option value="LPA">LPA (Lapisan Pondasi Agregat)</option>
                     </select>
                 </div>
+                <div class="form-group">
+                    <label>Posisi Jalan</label>
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="posisi_jalan" value="Kiri">
+                            <span class="radio-text">Kiri</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="posisi_jalan" value="Tengah" checked>
+                            <span class="radio-text">Tengah</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="posisi_jalan" value="Kanan">
+                            <span class="radio-text">Kanan</span>
+                        </label>
+                    </div>
+                </div>
             </div>
-
             
-            
-            
-
             <!-- Data Tebal Perkerasan -->
             <div class="section-title">Data Tebal Perkerasan</div>
             <div class="form-row">
                 <div class="form-group">
                     <label for="tebal1">Tebal 1 (mm)</label>
-                    <input type="number" id="tebal1" name="tebal1" step="0.01" placeholder="4,00/6,00">
+                    <input type="text" id="tebal1" name="tebal1" class="decimal-mask" placeholder="4,0/6,0">
                 </div>
                 <div class="form-group">
                     <label for="tebal2">Tebal 2 (mm)</label>
-                    <input type="number" id="tebal2" name="tebal2" step="0.01" placeholder="4,00/6,00">
+                    <input type="text" id="tebal2" name="tebal2" class="decimal-mask" placeholder="4,0/6,0">
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group">
                     <label for="tebal3">Tebal 3 (mm)</label>
-                    <input type="number" id="tebal3" name="tebal3" step="0.01" placeholder="4,00/6,00">
+                    <input type="text" id="tebal3" name="tebal3" class="decimal-mask" placeholder="4,0/6,0">
                 </div>
                 <div class="form-group">
                     <label for="tebal4">Tebal 4 (mm)</label>
-                    <input type="number" id="tebal4" name="tebal4" step="0.01" placeholder="4,00/6,00">
+                    <input type="text" id="tebal4" name="tebal4" class="decimal-mask" placeholder="4,0/6,0">
                 </div>
             </div>
 
@@ -358,8 +574,8 @@
             <div class="section-title">Data Lebar Jalan</div>
             <div class="form-row">
                 <div class="form-group">
-                    <label for="lebarjalan">Lebar Jalan (cm)</label>
-                    <input type="number" id="lebarjalan" name="lebarjalan" step="0.01" placeholder="7.00">
+                    <label for="lebarjalan">Lebar Jalan (m)</label>
+                    <input type="text" id="lebarjalan" name="lebarjalan" class="decimal-mask" placeholder="3,0/4,0">
                 </div>
             </div>
 
@@ -368,11 +584,11 @@
             <div class="form-row">
                 <div class="form-group">
                     <label for="lebarkiri">Lebar Bahu Kiri (cm)</label>
-                    <input type="number" id="lebarkiri" name="lebarkiri" step="0.01" placeholder="1.50">
+                    <input type="number" id="lebarkiri" name="lebarkiri" step="0.01" placeholder="30">
                 </div>
                 <div class="form-group">
                     <label for="tekalkiri">Tebal Bahu Kiri (cm)</label>
-                    <input type="number" id="tekalkiri" name="tekalkiri" step="0.01" placeholder="25.00">
+                    <input type="number" id="tekalkiri" name="tekalkiri" step="0.01" placeholder="30">
                 </div>
             </div>
 
@@ -381,11 +597,11 @@
             <div class="form-row">
                 <div class="form-group">
                     <label for="lebarkanan">Lebar Bahu Kanan (cm)</label>
-                    <input type="number" id="lebarkanan" name="lebarkanan" step="0.01" placeholder="1.50">
+                    <input type="number" id="lebarkanan" name="lebarkanan" step="0.01" placeholder="30">
                 </div>
                 <div class="form-group">
                     <label for="tekalkanan">Tebal Bahu Kanan (cm)</label>
-                    <input type="number" id="tekalkanan" name="tekalkanan" step="0.01" placeholder="25.00">
+                    <input type="number" id="tekalkanan" name="tekalkanan" step="0.01" placeholder="30">
                 </div>
             </div>
 
@@ -440,6 +656,114 @@
     </div>
 
     <script>
+        // Decimal Input Mask - Format: #,## (1 digit before comma, 2 digits after) for AC-WC/AC-BC
+        // Format: ##,## (2 digits before comma, 2 digits after) for LPA
+        class DecimalMask {
+            constructor(inputElement, format = 'short') {
+                this.input = inputElement;
+                this.format = format; // 'short' = #,## (for mm), 'long' = ##,## (for cm)
+                this.init();
+            }
+            
+            init() {
+                // Handle input events
+                this.input.addEventListener('input', (e) => this.handleInput(e));
+                this.input.addEventListener('keypress', (e) => this.handleKeyPress(e));
+                this.input.addEventListener('blur', (e) => this.handleBlur(e));
+                this.input.addEventListener('focus', (e) => this.handleFocus(e));
+            }
+            
+            handleKeyPress(e) {
+                // Allow only digits
+                const char = String.fromCharCode(e.which);
+                const allowedChars = /[0-9]/;
+                
+                if (!allowedChars.test(char)) {
+                    e.preventDefault();
+                    return false;
+                }
+            }
+            
+            handleInput(e) {
+                let value = this.input.value;
+                
+                // Remove any non-digit characters
+                value = value.replace(/[^0-9]/g, '');
+                
+                // Format based on type
+                if (this.format === 'long') {
+                    // ##,## format (2 digits before comma, 2 digits after)
+                    if (value.length >= 3) {
+                        const firstDigits = value.slice(0, 2);
+                        const remainingDigits = value.slice(2);
+                        value = firstDigits + ',' + remainingDigits;
+                    }
+                } else {
+                    // #,## format (1 digit before comma, 2 digits after)
+                    if (value.length >= 2) {
+                        const firstDigit = value.charAt(0);
+                        const remainingDigits = value.slice(1);
+                        value = firstDigit + ',' + remainingDigits;
+                    }
+                }
+                
+                this.input.value = value;
+            }
+            
+            handleBlur(e) {
+                // Keep the format with comma as decimal separator
+            }
+            
+            handleFocus(e) {
+                // Select all text on focus for easy editing
+                this.input.select();
+            }
+            
+            getValue() {
+                const value = this.input.value;
+                if (value === '') return null;
+                
+                // Convert comma to dot for PHP processing
+                return value.replace(',', '.');
+            }
+        }
+        
+        // Initialize decimal masks for all decimal inputs
+        let decimalMasks = {};
+        
+        // Update thickness format based on road type
+        function updateThicknessFormat(jenis) {
+            const isLPA = (jenis === 'LPA');
+            const format = isLPA ? 'long' : 'short';
+            const unitLabel = isLPA ? 'cm' : 'mm';
+            const placeholder = isLPA ? '15,00' : '4,0/6,0';
+            
+            // Update labels and placeholders
+            const tebalInputs = ['tebal1', 'tebal2', 'tebal3', 'tebal4'];
+            tebalInputs.forEach(id => {
+                const input = document.getElementById(id);
+                const label = document.querySelector(`label[for="${id}"]`);
+                
+                if (input) {
+                    input.placeholder = placeholder;
+                    // Recreate mask with new format
+                    decimalMasks[id] = new DecimalMask(input, format);
+                }
+                
+                if (label) {
+                    // Update label to show correct unit
+                    if (label.textContent.includes('Tebal')) {
+                        label.textContent = label.textContent.replace(/\(.*\)/, `(${unitLabel})`);
+                    }
+                }
+            });
+        }
+        
+        // Update thickness format based on road type
+        // PHP Message handling
+        const phpMessage = "<?php echo addslashes($message); ?>";
+        const phpMessageType = "<?php echo $messageType; ?>";
+        
         // Get id_pekerjaan and id_sub_pekerjaan from URL
         const urlParams = new URLSearchParams(window.location.search);
         const idPekerjaan = urlParams.get('id_pekerjaan');
@@ -449,6 +773,99 @@
         if (idPekerjaan) {
             loadPekerjaanName(idPekerjaan);
         }
+        
+        async function loadPekerjaanName(id) {
+            try {
+                const response = await fetch('api/get_pekerjaan.php?id=' + id);
+                const result = await response.json();
+                
+                if (result.success && result.data) {
+                    const pekerjaanName = document.getElementById('pekerjaanName');
+                    if (pekerjaanName) {
+                        pekerjaanName.textContent = result.data.nama_pekerjaan || 'Pekerjaan #' + id;
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading pekerjaan name:', error);
+            }
+        }
+        
+        // Load sub_pekerjaan options
+        async function loadSubPekerjaan(idPekerjaan) {
+            try {
+                const response = await fetch('api/proses_sub_pekerjaan.php?type=jalan&id_pekerjaan=' + idPekerjaan);
+                const result = await response.json();
+                
+                const select = document.getElementById('id_sub_pekerjaan');
+                select.innerHTML = '<option value="">Pilih Sub Pekerjaan</option>';
+                
+                if (result.success && result.data) {
+                    result.data.forEach(sub => {
+                        const option = document.createElement('option');
+                        option.value = sub.id_sub_pekerjaan;
+                        option.textContent = sub.nama_sub_pekerjaan || 'Sub Pekerjaan #' + sub.id_sub_pekerjaan;
+                        if (idSubPekerjaan && idSubPekerjaan == sub.id_sub_pekerjaan) {
+                            option.selected = true;
+                        }
+                        select.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading sub pekerjaan:', error);
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Display PHP message if exists
+            if (phpMessage && phpMessage !== '') {
+                if (phpMessageType === 'success') {
+                    Swal.fire({
+                        title: 'Berhasil',
+                        html: phpMessage,
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    });
+                } else if (phpMessageType === 'error') {
+                    Swal.fire({
+                        title: 'Gagal',
+                        html: phpMessage,
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            }
+            
+            // Find all decimal-mask inputs and initialize them with default format (short for mm)
+            const decimalInputs = document.querySelectorAll('.decimal-mask');
+            decimalInputs.forEach(input => {
+                decimalMasks[input.id] = new DecimalMask(input, 'short');
+            });
+            
+            // Add change listener for jenis jalan to update mask format
+            const jenisSelect = document.getElementById('jenis');
+            if (jenisSelect) {
+                jenisSelect.addEventListener('change', function() {
+                    updateThicknessFormat(this.value);
+                });
+            }
+            
+            // Initialize map
+            initMap();
+            
+            if (idPekerjaan) {
+                loadSubPekerjaan(idPekerjaan);
+            }
+            
+            // Check if STA is passed in URL and populate it
+            const staFromUrl = urlParams.get('sta');
+            if (staFromUrl) {
+                document.getElementById('sta').value = staFromUrl;
+                console.log('STA from URL:', staFromUrl);
+            }
+            
+            // Auto-get GPS location on page load
+            autoGetLocation();
+        });
         
         async function loadPekerjaanName(id) {
             try {
@@ -589,26 +1006,7 @@
             );
         }
         
-        // Initialize on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            initMap();
-            
-            if (idPekerjaan) {
-                loadSubPekerjaan(idPekerjaan);
-            }
-            
-            // Check if STA is passed in URL and populate it
-            const staFromUrl = urlParams.get('sta');
-            if (staFromUrl) {
-                document.getElementById('sta').value = staFromUrl;
-                console.log('STA from URL:', staFromUrl);
-            }
-            
-            // Auto-get GPS location on page load
-            autoGetLocation();
-        });
-        
-        // Auto-get GPS location
+        // Auto-get GPS location on page load
         function autoGetLocation() {
             const statusEl = document.getElementById('gpsStatus');
             
@@ -631,6 +1029,8 @@
                     
                     if (map) {
                         setMarker(lat, lng);
+                        // Zoom to user's location
+                        map.setView([lat, lng], 16);
                     }
                     
                     statusEl.textContent = 'Lokasi otomatis terdeteksi!';
@@ -829,6 +1229,24 @@
             formDataToSend.append('id_pekerjaan', idPekerjaan);
             formDataToSend.append('id_sub_pekerjaan', idSubPekerjaan || null);
             
+            // Explicitly get posisi_jalan value from radio buttons
+            const posisiJalanRadios = document.getElementsByName('posisi_jalan');
+            let posisiJalanValue = 'Tengah';
+            for (const radio of posisiJalanRadios) {
+                if (radio.checked) {
+                    posisiJalanValue = radio.value;
+                    break;
+                }
+            }
+            formDataToSend.set('posisi_jalan', posisiJalanValue);
+            console.log('posisi_jalan value:', posisiJalanValue);
+            
+            // Show loading overlay
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            const loadingText = document.getElementById('loadingText');
+            loadingOverlay.classList.add('active');
+            loadingText.textContent = 'Menyimpan data...';
+            
             try {
                 console.log('Sending data with images...');
                 const response = await fetch('api/proses_rekapan.php?action=create_with_image', {
@@ -838,6 +1256,9 @@
                 console.log('Response status:', response.status);
                 const result = await response.json();
                 console.log('Response result:', result);
+                
+                // Hide loading overlay
+                loadingOverlay.classList.remove('active');
                 
                 if (result.success) {
                     // Store current STA value for potential reuse
@@ -899,6 +1320,8 @@
                 }
             } catch (error) {
                 console.error('Error:', error);
+                // Hide loading overlay on error
+                loadingOverlay.classList.remove('active');
                 Swal.fire('Error', 'Terjadi kesalahan saat menyimpan data. Buka console untuk detail.', 'error');
             }
         });

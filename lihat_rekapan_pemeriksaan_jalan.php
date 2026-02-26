@@ -466,6 +466,10 @@
                     <div class="data-value">${d.jenis_jalan || '-'}</div>
                 </div>
                 <div class="data-item">
+                    <div class="data-label">Posisi Jalan</div>
+                    <div class="data-value">${d.posisi_jalan || '-'}</div>
+                </div>
+                <div class="data-item">
                     <div class="data-label">Status Kesesuaian</div>
                     <div class="data-value ${statusClass}">${statusText}</div>
                 </div>

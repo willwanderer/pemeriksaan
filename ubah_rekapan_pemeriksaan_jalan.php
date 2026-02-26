@@ -159,6 +159,50 @@
             margin-bottom: 20px;
         }
 
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            margin-top: 8px;
+        }
+
+        .radio-label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 8px 16px;
+            border: 2px solid #e1e1e1;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .radio-label:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .radio-label input[type="radio"] {
+            margin-right: 8px;
+            width: 18px;
+            height: 18px;
+            accent-color: #667eea;
+            cursor: pointer;
+        }
+
+        .radio-label input[type="radio"]:checked + .radio-text {
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .radio-label:has(input[type="radio"]:checked) {
+            border-color: #667eea;
+            background: #f0f2ff;
+        }
+
+        .radio-text {
+            font-size: 14px;
+            color: #333;
+        }
+
         .form-row {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -188,6 +232,7 @@
             border-color: #667eea;
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
+
 
         input::placeholder {
             color: #999;
@@ -446,26 +491,44 @@
                         </select>
                     </div>
                 </div>
+                
+                <div class="form-group">
+                    <label>Posisi Jalan</label>
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="posisi_jalan" value="Kiri">
+                            <span class="radio-text">Kiri</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="posisi_jalan" value="Tengah" checked>
+                            <span class="radio-text">Tengah</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="posisi_jalan" value="Kanan">
+                            <span class="radio-text">Kanan</span>
+                        </label>
+                    </div>
+                </div>
 
                 <!-- Data Tebal Perkerasan -->
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="tebal1">Tebal 1 (cm)</label>
-                        <input type="number" id="tebal1" name="tebal1" step="0.01" placeholder="4,00/6,00">
+                        <label for="tebal1">Tebal 1 (mm)</label>
+                        <input type="text" id="tebal1" name="tebal1" class="decimal-mask" placeholder="4,0">
                     </div>
                     <div class="form-group">
-                        <label for="tebal2">Tebal 2 (cm)</label>
-                        <input type="number" id="tebal2" name="tebal2" step="0.01" placeholder="4,00/6,00">
+                        <label for="tebal2">Tebal 2 (mm)</label>
+                        <input type="text" id="tebal2" name="tebal2" class="decimal-mask" placeholder="4,0">
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="tebal3">Tebal 3 (cm)</label>
-                        <input type="number" id="tebal3" name="tebal3" step="0.01" placeholder="4,00/6,00">
+                        <label for="tebal3">Tebal 3 (mm)</label>
+                        <input type="text" id="tebal3" name="tebal3" class="decimal-mask" placeholder="4,0">
                     </div>
                     <div class="form-group">
-                        <label for="tebal4">Tebal 4 (cm)</label>
-                        <input type="number" id="tebal4" name="tebal4" step="0.01" placeholder="4,00/6,00">
+                        <label for="tebal4">Tebal 4 (mm)</label>
+                        <input type="text" id="tebal4" name="tebal4" class="decimal-mask" placeholder="4,0">
                     </div>
                 </div>
 
@@ -533,6 +596,124 @@
         const API_URL = 'api/proses_rekapan.php';
         const BM_TYPE = 'jalan';
         
+        // Decimal Input Mask - Format: #,## (1 digit before comma, 2 digits after) for AC-WC/AC-BC
+        // Format: ##,## (2 digits before comma, 2 digits after) for LPA
+        class DecimalMask {
+            constructor(inputElement, format = 'short') {
+                this.input = inputElement;
+                this.format = format; // 'short' = #,## (for mm), 'long' = ##,## (for cm)
+                this.init();
+            }
+            
+            init() {
+                this.input.addEventListener('input', (e) => this.handleInput(e));
+                this.input.addEventListener('keypress', (e) => this.handleKeyPress(e));
+                this.input.addEventListener('blur', (e) => this.handleBlur(e));
+                this.input.addEventListener('focus', (e) => this.handleFocus(e));
+            }
+            
+            handleKeyPress(e) {
+                const char = String.fromCharCode(e.which);
+                const allowedChars = /[0-9]/;
+                
+                if (!allowedChars.test(char)) {
+                    e.preventDefault();
+                    return false;
+                }
+            }
+            
+            handleInput(e) {
+                let value = this.input.value;
+                
+                // Remove any non-digit characters
+                value = value.replace(/[^0-9]/g, '');
+                
+                // Format based on type
+                if (this.format === 'long') {
+                    // ##,## format (2 digits before comma, 2 digits after)
+                    if (value.length >= 3) {
+                        const firstDigits = value.slice(0, 2);
+                        const remainingDigits = value.slice(2);
+                        value = firstDigits + ',' + remainingDigits;
+                    }
+                } else {
+                    // #,## format (1 digit before comma, 2 digits after)
+                    if (value.length >= 2) {
+                        const firstDigit = value.charAt(0);
+                        const remainingDigits = value.slice(1);
+                        value = firstDigit + ',' + remainingDigits;
+                    }
+                }
+                
+                this.input.value = value;
+            }
+            
+            handleBlur(e) {
+                // Keep the format with comma as decimal separator
+            }
+            
+            handleFocus(e) {
+                this.input.select();
+            }
+            
+            getValue() {
+                const value = this.input.value;
+                if (value === '') return null;
+                return value.replace(',', '.');
+            }
+        }
+        
+        // Store mask instances
+        let decimalMasks = {};
+        
+        // Initialize decimal masks for tebal inputs
+        function initializeDecimalMasks() {
+            const tebalInputs = ['tebal1', 'tebal2', 'tebal3', 'tebal4'];
+            const currentJenis = document.getElementById('jenis')?.value || 'AC-WC';
+            const format = (currentJenis === 'LPA') ? 'long' : 'short';
+            
+            tebalInputs.forEach(id => {
+                const input = document.getElementById(id);
+                if (input) {
+                    // Change from number to text type for mask
+                    input.type = 'text';
+                    input.removeAttribute('step');
+                    input.classList.add('decimal-mask');
+                    
+                    // Set placeholder based on format
+                    input.placeholder = (format === 'long') ? '15,00' : '4,0';
+                    
+                    // Create mask instance
+                    decimalMasks[id] = new DecimalMask(input, format);
+                }
+            });
+        }
+        
+        // Update thickness format based on road type
+        function updateThicknessFormat(jenis) {
+            const isLPA = (jenis === 'LPA');
+            const format = isLPA ? 'long' : 'short';
+            const unitLabel = isLPA ? 'cm' : 'mm';
+            const placeholder = isLPA ? '15,00' : '4,0';
+            
+            // Update labels and placeholders
+            const tebalInputs = ['tebal1', 'tebal2', 'tebal3', 'tebal4'];
+            tebalInputs.forEach(id => {
+                const input = document.getElementById(id);
+                const label = document.querySelector(`label[for="${id}"]`);
+                
+                if (input) {
+                    input.placeholder = placeholder;
+                    // Recreate mask with new format
+                    decimalMasks[id] = new DecimalMask(input, format);
+                }
+                
+                if (label) {
+                    label.textContent = label.textContent.replace(/\(.*\)/, `(${unitLabel})`);
+                }
+            });
+        }
+        
         // Get URL parameters
         const urlParams = new URLSearchParams(window.location.search);
         const id = urlParams.get('id');
@@ -543,6 +724,19 @@
         
         document.addEventListener('DOMContentLoaded', function() {
             initMap(true); // true = read-only mode for edit page
+            
+            // Initialize decimal masks for tebal inputs
+            initializeDecimalMasks();
+            
+            // Add change listener for jenis jalan to update mask format
+            const jenisSelect = document.getElementById('jenis');
+            if (jenisSelect) {
+                jenisSelect.addEventListener('change', function() {
+                    updateThicknessFormat(this.value);
+                });
+                // Initialize based on current selection
+                updateThicknessFormat(jenisSelect.value);
+            }
             
             if (id) {
                 loadData(id);
@@ -665,6 +859,17 @@
                     document.getElementById('latitude').value = d.latitude || '';
                     document.getElementById('longitude').value = d.longitude || '';
                     document.getElementById('jenis').value = d.jenis_jalan || '';
+                    
+                    // Set posisi_jalan radio button
+                    const posisiJalan = d.posisi_jalan || 'Tengah';
+                    const radioButtons = document.getElementsByName('posisi_jalan');
+                    for (const radio of radioButtons) {
+                        if (radio.value === posisiJalan) {
+                            radio.checked = true;
+                            break;
+                        }
+                    }
+                    
                     document.getElementById('tebal1').value = d.tebal_1 || '';
                     document.getElementById('tebal2').value = d.tebal_2 || '';
                     document.getElementById('tebal3').value = d.tebal_3 || '';
@@ -731,6 +936,17 @@
             formData.append('type', BM_TYPE);
             formData.append('id', id);
             formData.append('id_pekerjaan', idPekerjaan);
+            
+            // Explicitly get posisi_jalan value from radio buttons
+            const posisiJalanRadios = document.getElementsByName('posisi_jalan');
+            let posisiJalanValue = 'Tengah';
+            for (const radio of posisiJalanRadios) {
+                if (radio.checked) {
+                    posisiJalanValue = radio.value;
+                    break;
+                }
+            }
+            formData.set('posisi_jalan', posisiJalanValue);
             
             // Get existing data for photo paths
             try {

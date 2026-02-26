@@ -42,15 +42,6 @@ CREATE TABLE `activity_log` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `activity_log`
---
-
-LOCK TABLES `activity_log` WRITE;
-/*!40000 ALTER TABLE `activity_log` DISABLE KEYS */;
-/*!40000 ALTER TABLE `activity_log` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `addendum`
 --
 
@@ -78,16 +69,6 @@ CREATE TABLE `addendum` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `addendum`
---
-
-LOCK TABLES `addendum` WRITE;
-/*!40000 ALTER TABLE `addendum` DISABLE KEYS */;
-INSERT INTO `addendum` VALUES (2,3,'01.1/ADD-SP-DENDA/DAU/DPUPR-BM/JP/I/2026','2026-01-02','pemberian kesempatan sampai dengan 19 Februari 2026 dengan denda keterlambatan',6232570302.00,'2025-09-26','2025-12-31',NULL,NULL,'2026-02-22 15:04:03','2026-02-22 15:04:03');
-/*!40000 ALTER TABLE `addendum` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `akun_belanja`
 --
 
@@ -106,16 +87,6 @@ CREATE TABLE `akun_belanja` (
   KEY `idx_nama_akun` (`nama_akun`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `akun_belanja`
---
-
-LOCK TABLES `akun_belanja` WRITE;
-/*!40000 ALTER TABLE `akun_belanja` DISABLE KEYS */;
-INSERT INTO `akun_belanja` VALUES (1,'Belanja Modal Jalan, Irigasi, dan Jaringan','JIJ','BM Jalan, Irigasi, dan Jaringan','2026-02-22 08:30:20','2026-02-22 08:30:20'),(2,'Belanja Modal Gedung dan Bangunan','BG','BM Gedung dan Bangunan','2026-02-22 08:30:20','2026-02-22 08:30:20'),(3,'Belanja Modal Peralatan Mesin','PM','BM Peralatan dan Mesin','2026-02-22 08:30:20','2026-02-22 08:30:20'),(4,'Belanja Modal Tanah','TL','BM Tanah','2026-02-22 08:30:20','2026-02-22 08:30:20'),(5,'Belanja Modal Aset Tetap Lainnya','ATL','BM Aset Tetap Lainnya','2026-02-22 08:30:20','2026-02-22 08:30:20'),(6,'Belanja Modal Aset Lainnya','AL','BM Aset Lainnya','2026-02-22 08:30:20','2026-02-22 08:30:20');
-/*!40000 ALTER TABLE `akun_belanja` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `denda_keterlambatan`
@@ -143,16 +114,6 @@ CREATE TABLE `denda_keterlambatan` (
   CONSTRAINT `denda_keterlambatan_ibfk_1` FOREIGN KEY (`id_pekerjaan`) REFERENCES `pekerjaan` (`id_pekerjaan`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `denda_keterlambatan`
---
-
-LOCK TABLES `denda_keterlambatan` WRITE;
-/*!40000 ALTER TABLE `denda_keterlambatan` DISABLE KEYS */;
-INSERT INTO `denda_keterlambatan` VALUES (4,3,0.0010,623257.00,100.00,38,2368377.00,0,NULL,'','2026-02-23 16:16:59','2026-02-23 16:16:59');
-/*!40000 ALTER TABLE `denda_keterlambatan` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `dokumen`
@@ -188,15 +149,6 @@ CREATE TABLE `dokumen` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `dokumen`
---
-
-LOCK TABLES `dokumen` WRITE;
-/*!40000 ALTER TABLE `dokumen` DISABLE KEYS */;
-/*!40000 ALTER TABLE `dokumen` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `entitas`
 --
 
@@ -221,16 +173,6 @@ CREATE TABLE `entitas` (
   KEY `idx_daerah` (`daerah`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `entitas`
---
-
-LOCK TABLES `entitas` WRITE;
-/*!40000 ALTER TABLE `entitas` DISABLE KEYS */;
-INSERT INTO `entitas` VALUES (1,'LKPD TA 2025 Pemkab Jeneponto','kabupaten','Jeneponto','Jl. Lanto Dg Pasewang, Empoang, Kec. Binamu, Kabupaten Jeneponto, Sulawesi Selatan 92311','(0419) 21022',_binary 'dokumen_pemeriksaan/LKPD2025Jeneponto/logo.png','LKPD2025Jeneponto','2026-02-22 08:30:20','2026-02-22 13:04:44',NULL);
-/*!40000 ALTER TABLE `entitas` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `item_pekerjaan`
@@ -262,15 +204,6 @@ CREATE TABLE `item_pekerjaan` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `item_pekerjaan`
---
-
-LOCK TABLES `item_pekerjaan` WRITE;
-/*!40000 ALTER TABLE `item_pekerjaan` DISABLE KEYS */;
-/*!40000 ALTER TABLE `item_pekerjaan` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `kontak`
 --
 
@@ -295,16 +228,6 @@ CREATE TABLE `kontak` (
   CONSTRAINT `kontak_ibfk_1` FOREIGN KEY (`id_entitas`) REFERENCES `entitas` (`id_entitas`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `kontak`
---
-
-LOCK TABLES `kontak` WRITE;
-/*!40000 ALTER TABLE `kontak` DISABLE KEYS */;
-INSERT INTO `kontak` VALUES (5,1,'Mashuri','Kepala Bidang Jalan','082189538029','',NULL,'2026-02-22 13:31:14','2026-02-22 13:31:14',NULL);
-/*!40000 ALTER TABLE `kontak` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `pekerjaan`
@@ -350,16 +273,6 @@ CREATE TABLE `pekerjaan` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `pekerjaan`
---
-
-LOCK TABLES `pekerjaan` WRITE;
-/*!40000 ALTER TABLE `pekerjaan` DISABLE KEYS */;
-INSERT INTO `pekerjaan` VALUES (2,1,1,4,'Peningkatan/Rehabilitasi Jalan Ruas Romanga-Taba, Ruas Romanga-Panaikang, Ruas Bontoraya Kalongko','Dinas Pekerjaan Umum dan Penataan Ruang','02/SP/DAU/DPUPR-BM/JP/IX/2025',435435344000.00,'2025-10-03','2025-10-04','2025-12-31','Ruas Romanga-Taba, Ruas Romanga-Panaikang, Ruas Bontoraya Kalongko','','JIJ_CVBK','JIJ','CVBK','planning',NULL,0,'2026-02-22 13:58:19','2026-02-22 14:16:55'),(3,1,1,5,'Peningkatan Jalan Ruas Pammengkang Bulo-Bulo - Palajau','Dinas Pekerjaan Umum dan Penataan Ruang','02/SP/DAU/DPUPR-BM/JP/IX/2025',6232570302.00,'2025-09-25','2025-09-26','2025-12-31','Ruas Pammengkang Bulo-Bulo - Palajau','','JIJ_CVHM','JIJ','CVHM','planning',NULL,0,'2026-02-22 14:23:47','2026-02-22 14:23:47');
-/*!40000 ALTER TABLE `pekerjaan` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `pembayaran`
 --
 
@@ -390,16 +303,6 @@ CREATE TABLE `pembayaran` (
   CONSTRAINT `pembayaran_ibfk_1` FOREIGN KEY (`id_pekerjaan`) REFERENCES `pekerjaan` (`id_pekerjaan`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `pembayaran`
---
-
-LOCK TABLES `pembayaran` WRITE;
-/*!40000 ALTER TABLE `pembayaran` DISABLE KEYS */;
-INSERT INTO `pembayaran` VALUES (1,3,'73.04/04.0/000198/LS/1.03.0.0.00.0.00.01.000/P4/1.0/2025',1,'2025-10-13',1246514060.00,0.00,'paid',0.00,0.00,NULL,'',NULL,'2026-02-22 15:09:51','2026-02-22 15:09:51'),(2,3,'73.04/04.0/000237/LS/1.03.0.0.00.0.00.01.000/PR/11/2025',2,'2025-11-28',4082333548.00,0.00,'paid',0.00,0.00,NULL,'',NULL,'2026-02-22 15:11:02','2026-02-22 15:11:02'),(3,3,'73.04/04.0/000310/LS/1.03.0.0.00.0.00.01.000/PR/12/2025',3,'2025-12-31',296047090.00,0.00,'paid',0.00,0.00,NULL,'',NULL,'2026-02-22 15:11:56','2026-02-22 15:11:56');
-/*!40000 ALTER TABLE `pembayaran` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `pemeriksaan_pekerjaan`
@@ -443,16 +346,6 @@ CREATE TABLE `pemeriksaan_pekerjaan` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `pemeriksaan_pekerjaan`
---
-
-LOCK TABLES `pemeriksaan_pekerjaan` WRITE;
-/*!40000 ALTER TABLE `pemeriksaan_pekerjaan` DISABLE KEYS */;
-INSERT INTO `pemeriksaan_pekerjaan` VALUES (1,3,0,9,'belum_lengkap',NULL,1,'2026-02-23','Pemeriksaan manual',1,'2026-02-22','Pemeriksaan manual',1,'2026-02-22','Pemeriksaan manual',NULL,0.00,NULL,NULL,NULL,'Pembayaran belum dilakukan 100%','sedang_cek','2026-02-23','2026-02-22 15:52:40','2026-02-23 16:14:18');
-/*!40000 ALTER TABLE `pemeriksaan_pekerjaan` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `penyedia`
 --
 
@@ -474,16 +367,6 @@ CREATE TABLE `penyedia` (
   KEY `idx_nama_penyedia` (`nama_penyedia`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `penyedia`
---
-
-LOCK TABLES `penyedia` WRITE;
-/*!40000 ALTER TABLE `penyedia` DISABLE KEYS */;
-INSERT INTO `penyedia` VALUES (4,'CV Bumi Karya','CVBK',NULL,NULL,NULL,NULL,'2026-02-22 13:52:09','2026-02-22 13:52:09'),(5,'CV Hijrah Mandiri','CVHM',NULL,NULL,NULL,NULL,'2026-02-22 14:23:47','2026-02-22 14:23:47');
-/*!40000 ALTER TABLE `penyedia` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `perbandingan_item_pemeriksaan`
@@ -524,15 +407,6 @@ CREATE TABLE `perbandingan_item_pemeriksaan` (
   CONSTRAINT `perbandingan_item_pemeriksaan_ibfk_2` FOREIGN KEY (`id_item_pekerjaan`) REFERENCES `item_pekerjaan` (`id_item_pekerjaan`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `perbandingan_item_pemeriksaan`
---
-
-LOCK TABLES `perbandingan_item_pemeriksaan` WRITE;
-/*!40000 ALTER TABLE `perbandingan_item_pemeriksaan` DISABLE KEYS */;
-/*!40000 ALTER TABLE `perbandingan_item_pemeriksaan` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `rekapan_pemeriksaan_aset_lain`
@@ -587,15 +461,6 @@ CREATE TABLE `rekapan_pemeriksaan_aset_lain` (
   CONSTRAINT `rekapan_pemeriksaan_aset_lain_ibfk_1` FOREIGN KEY (`id_pekerjaan`) REFERENCES `pekerjaan` (`id_pekerjaan`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `rekapan_pemeriksaan_aset_lain`
---
-
-LOCK TABLES `rekapan_pemeriksaan_aset_lain` WRITE;
-/*!40000 ALTER TABLE `rekapan_pemeriksaan_aset_lain` DISABLE KEYS */;
-/*!40000 ALTER TABLE `rekapan_pemeriksaan_aset_lain` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `rekapan_pemeriksaan_gedung`
@@ -656,15 +521,6 @@ CREATE TABLE `rekapan_pemeriksaan_gedung` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `rekapan_pemeriksaan_gedung`
---
-
-LOCK TABLES `rekapan_pemeriksaan_gedung` WRITE;
-/*!40000 ALTER TABLE `rekapan_pemeriksaan_gedung` DISABLE KEYS */;
-/*!40000 ALTER TABLE `rekapan_pemeriksaan_gedung` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `rekapan_pemeriksaan_jalan`
 --
 
@@ -680,6 +536,7 @@ CREATE TABLE `rekapan_pemeriksaan_jalan` (
   `longitude` decimal(11,8) DEFAULT NULL,
   `latitude` decimal(11,8) DEFAULT NULL,
   `jenis_jalan` enum('AC-WC','AC-BC','LPA','Arteri','Kolektor','Lokal','Lingkungan') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'AC-WC',
+  `posisi_jalan` enum('Kiri','Tengah','Kanan') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'Tengah' COMMENT 'Position of road relative to lane',
   `tebal_1` decimal(8,2) DEFAULT NULL,
   `tebal_2` decimal(8,2) DEFAULT NULL,
   `tebal_3` decimal(8,2) DEFAULT NULL,
@@ -714,18 +571,8 @@ CREATE TABLE `rekapan_pemeriksaan_jalan` (
   KEY `idx_status_verifikasi` (`status_verifikasi`),
   KEY `idx_id_sub_pekerjaan` (`id_sub_pekerjaan`),
   CONSTRAINT `rekapan_pemeriksaan_jalan_ibfk_1` FOREIGN KEY (`id_pekerjaan`) REFERENCES `pekerjaan` (`id_pekerjaan`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `rekapan_pemeriksaan_jalan`
---
-
-LOCK TABLES `rekapan_pemeriksaan_jalan` WRITE;
-/*!40000 ALTER TABLE `rekapan_pemeriksaan_jalan` DISABLE KEYS */;
-INSERT INTO `rekapan_pemeriksaan_jalan` VALUES (13,3,1,'0+000','STA',119.77458875,-5.66937300,'AC-WC',4.00,4.00,4.00,4.00,NULL,NULL,NULL,4.00,4.00,4.00,4.00,4.00,NULL,NULL,NULL,'dokumen_pemeriksaan/jalan_13_fotosta_1771870482.png','dokumen_pemeriksaan/jalan_13_fotobahu_1771870482.png','dokumen_pemeriksaan/jalan_13_fotobendauji_1771870482.png','dokumen_pemeriksaan/jalan_13_fotolain_1771870482.png','pending',NULL,NULL,NULL,NULL,'sesuai','2026-02-23 11:14:42','2026-02-23 18:14:42');
-/*!40000 ALTER TABLE `rekapan_pemeriksaan_jalan` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `rekapan_pemeriksaan_peralatan`
@@ -783,15 +630,6 @@ CREATE TABLE `rekapan_pemeriksaan_peralatan` (
   CONSTRAINT `rekapan_pemeriksaan_peralatan_ibfk_1` FOREIGN KEY (`id_pekerjaan`) REFERENCES `pekerjaan` (`id_pekerjaan`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `rekapan_pemeriksaan_peralatan`
---
-
-LOCK TABLES `rekapan_pemeriksaan_peralatan` WRITE;
-/*!40000 ALTER TABLE `rekapan_pemeriksaan_peralatan` DISABLE KEYS */;
-/*!40000 ALTER TABLE `rekapan_pemeriksaan_peralatan` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `rekapan_pemeriksaan_tanah`
@@ -852,15 +690,6 @@ CREATE TABLE `rekapan_pemeriksaan_tanah` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `rekapan_pemeriksaan_tanah`
---
-
-LOCK TABLES `rekapan_pemeriksaan_tanah` WRITE;
-/*!40000 ALTER TABLE `rekapan_pemeriksaan_tanah` DISABLE KEYS */;
-/*!40000 ALTER TABLE `rekapan_pemeriksaan_tanah` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `serah_terima`
 --
 
@@ -893,16 +722,6 @@ CREATE TABLE `serah_terima` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `serah_terima`
---
-
-LOCK TABLES `serah_terima` WRITE;
-/*!40000 ALTER TABLE `serah_terima` DISABLE KEYS */;
-INSERT INTO `serah_terima` VALUES (4,3,'011.d/BAST/DPUPR-BM/JP/II/2026','2026-02-09','PHO','completed',0,NULL,0.00,0.00,NULL,NULL,NULL,'PHO dengan Denda','2026-02-22 15:52:33','2026-02-22 15:52:33');
-/*!40000 ALTER TABLE `serah_terima` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `sub_pekerjaan`
 --
 
@@ -921,16 +740,6 @@ CREATE TABLE `sub_pekerjaan` (
   CONSTRAINT `sub_pekerjaan_ibfk_1` FOREIGN KEY (`id_pekerjaan`) REFERENCES `pekerjaan` (`id_pekerjaan`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `sub_pekerjaan`
---
-
-LOCK TABLES `sub_pekerjaan` WRITE;
-/*!40000 ALTER TABLE `sub_pekerjaan` DISABLE KEYS */;
-INSERT INTO `sub_pekerjaan` VALUES (1,3,'Ruas Jalan 1','fsd','2026-02-23 16:23:01','2026-02-23 16:23:01');
-/*!40000 ALTER TABLE `sub_pekerjaan` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `user_settings`
@@ -952,15 +761,6 @@ CREATE TABLE `user_settings` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `user_settings`
---
-
-LOCK TABLES `user_settings` WRITE;
-/*!40000 ALTER TABLE `user_settings` DISABLE KEYS */;
-/*!40000 ALTER TABLE `user_settings` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Dumping routines for database 'pemeriksaan'
 --
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -973,4 +773,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-02-24 10:51:43
+-- Dump completed on 2026-02-26 20:15:26

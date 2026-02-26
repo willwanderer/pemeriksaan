@@ -296,13 +296,15 @@
                             <th>No</th>
                             <th>STA</th>
                             <th>Jenis</th>
-                            <th colspan="4">Tebal (cm)</th>
+                            <th>Posisi</th>
+                            <th colspan="4">Tebal (mm)</th>
                             <th>Lebar Jalan (m)</th>
                             <th>Kesesuaian</th>
                             <th>Catatan</th>
                             <th>Aksi</th>
                         </tr>
                         <tr>
+                            <th></th>
                             <th></th>
                             <th></th>
                             <th></th>
@@ -317,7 +319,7 @@
                         </tr>
                     </thead>
                     <tbody id="rekapanBodyACBC">
-                        <tr><td colspan="11" class="no-data">Tidak ada data AC-BC</td></tr>
+                        <tr><td colspan="12" class="no-data">Tidak ada data AC-BC</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -331,13 +333,15 @@
                             <th>No</th>
                             <th>STA</th>
                             <th>Jenis</th>
-                            <th colspan="4">Tebal (cm)</th>
+                            <th>Posisi</th>
+                            <th colspan="4">Tebal (mm)</th>
                             <th>Lebar Jalan (m)</th>
                             <th>Kesesuaian</th>
                             <th>Catatan</th>
                             <th>Aksi</th>
                         </tr>
                         <tr>
+                            <th></th>
                             <th></th>
                             <th></th>
                             <th></th>
@@ -352,10 +356,12 @@
                         </tr>
                     </thead>
                     <tbody id="rekapanBodyACWC">
-                        <tr><td colspan="11" class="no-data">Tidak ada data AC-WC</td></tr>
+                        <tr><td colspan="12" class="no-data">Tidak ada data AC-WC</td></tr>
                     </tbody>
                 </table>
             </div>
+            
+            
             
             <!-- Tabel Bahu Jalan -->
             <div class="table-section">
@@ -383,6 +389,43 @@
                     </thead>
                     <tbody id="rekapanBodyBahu">
                         <tr><td colspan="8" class="no-data">Tidak ada data Bahu Jalan</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Tabel LPA -->
+            <div class="table-section">
+                <h2 class="section-header" style="background: #10b981;">Tabel Pemeriksaan LPA (Lapis Permukaan Aus)</h2>
+                <table class="data-table" id="tableLPA">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>STA</th>
+                            <th>Jenis</th>
+                            <th>Posisi</th>
+                            <th colspan="4">Tebal (cm)</th>
+                            <th>Lebar Jalan (m)</th>
+                            <th>Kesesuaian</th>
+                            <th>Catatan</th>
+                            <th>Aksi</th>
+                        </tr>
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th>Tebal 1</th>
+                            <th>Tebal 2</th>
+                            <th>Tebal 3</th>
+                            <th>Tebal 4</th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="rekapanBodyLPA">
+                        <tr><td colspan="12" class="no-data">Tidak ada data LPA</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -557,6 +600,8 @@
             const acbcData = filteredData.filter(d => d.jenis_jalan === 'AC-BC');
             // AC-WC: jenis_jalan = 'AC-WC'
             const acwcData = filteredData.filter(d => d.jenis_jalan === 'AC-WC');
+            // LPA: jenis_jalan = 'LPA'
+            const lpaData = filteredData.filter(d => d.jenis_jalan === 'LPA');
             // Bahu Jalan: has value in any bahu field (lebar_bahu_kiri, tebal_bahu_kiri, lebar_bahu_kanan, tebal_bahu_kanan)
             const bahuData = filteredData.filter(d => 
                 (d.lebar_bahu_kiri && d.lebar_bahu_kiri > 0) ||
@@ -567,7 +612,7 @@
             
             // Render AC-BC table
             if (acbcData.length === 0) {
-                document.getElementById('rekapanBodyACBC').innerHTML = '<tr><td colspan="11" class="no-data">Tidak ada data AC-BC</td></tr>';
+                document.getElementById('rekapanBodyACBC').innerHTML = '<tr><td colspan="12" class="no-data">Tidak ada data AC-BC</td></tr>';
             } else {
                 let html = '';
                 acbcData.forEach((data, index) => {
@@ -578,13 +623,24 @@
             
             // Render AC-WC table
             if (acwcData.length === 0) {
-                document.getElementById('rekapanBodyACWC').innerHTML = '<tr><td colspan="11" class="no-data">Tidak ada data AC-WC</td></tr>';
+                document.getElementById('rekapanBodyACWC').innerHTML = '<tr><td colspan="12" class="no-data">Tidak ada data AC-WC</td></tr>';
             } else {
                 let html = '';
                 acwcData.forEach((data, index) => {
                     html += renderRowAC(data, index);
                 });
                 document.getElementById('rekapanBodyACWC').innerHTML = html;
+            }
+            
+            // Render LPA table
+            if (lpaData.length === 0) {
+                document.getElementById('rekapanBodyLPA').innerHTML = '<tr><td colspan="12" class="no-data">Tidak ada data LPA</td></tr>';
+            } else {
+                let html = '';
+                lpaData.forEach((data, index) => {
+                    html += renderRowAC(data, index);
+                });
+                document.getElementById('rekapanBodyLPA').innerHTML = html;
             }
             
             // Render Bahu Jalan table
@@ -609,6 +665,7 @@
                     <td>${index + 1}</td>
                     <td>${data.sta || '-'}</td>
                     <td>${data.jenis_jalan || '-'}</td>
+                    <td>${data.posisi_jalan || '-'}</td>
                     <td>${formatNumber(data.tebal_1)}</td>
                     <td>${formatNumber(data.tebal_2)}</td>
                     <td>${formatNumber(data.tebal_3)}</td>
