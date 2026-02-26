@@ -970,12 +970,27 @@
                 console.error('Error fetching existing data:', err);
             }
             
+            // Show SweetAlert loading animation
+            let swalLoading = Swal.fire({
+                title: 'Memperbarui Data...',
+                html: 'Mohon tunggu sebentar',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                showConfirmButton: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+            
             try {
                 const response = await fetch(API_URL + '?action=update_with_image', {
                     method: 'POST',
                     body: formData
                 });
                 const result = await response.json();
+                
+                // Close SweetAlert loading
+                Swal.close(swalLoading);
                 
                 if (result.success) {
                     Swal.fire({
@@ -995,6 +1010,8 @@
                 }
             } catch (error) {
                 console.error('Error:', error);
+                // Close SweetAlert loading
+                Swal.close(swalLoading);
                 Swal.fire('Error', 'Terjadi kesalahan saat menyimpan data', 'error');
             }
         });

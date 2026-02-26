@@ -1247,6 +1247,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             loadingOverlay.classList.add('active');
             loadingText.textContent = 'Menyimpan data...';
             
+            // Show SweetAlert loading animation
+            let swalLoading = Swal.fire({
+                title: 'Menyimpan Data...',
+                html: 'Mohon tunggu sebentar',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                showConfirmButton: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+            
             try {
                 console.log('Sending data with images...');
                 const response = await fetch('api/proses_rekapan.php?action=create_with_image', {
@@ -1259,6 +1271,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 
                 // Hide loading overlay
                 loadingOverlay.classList.remove('active');
+                // Close SweetAlert loading
+                Swal.close(swalLoading);
                 
                 if (result.success) {
                     // Store current STA value for potential reuse
@@ -1322,6 +1336,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 console.error('Error:', error);
                 // Hide loading overlay on error
                 loadingOverlay.classList.remove('active');
+                // Close SweetAlert loading
+                Swal.close(swalLoading);
                 Swal.fire('Error', 'Terjadi kesalahan saat menyimpan data. Buka console untuk detail.', 'error');
             }
         });
