@@ -450,13 +450,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </style>
 </head>
 <body>
-    <!-- Loading Overlay -->
-    <div class="loading-overlay" id="loadingOverlay">
-        <div style="text-align: center;">
-            <div class="loading-spinner"></div>
-            <div class="loading-text" id="loadingText">Menyimpan data...</div>
-        </div>
-    </div>
     
     <button class="back-btn" onclick="window.location.href='rekapan_pemeriksaan_jij.php?id_pekerjaan=' + new URLSearchParams(window.location.search).get('id_pekerjaan') + (new URLSearchParams(window.location.search).get('id_sub_pekerjaan') ? '&id_sub=' + new URLSearchParams(window.location.search).get('id_sub_pekerjaan') : '')">
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -1240,12 +1233,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             formDataToSend.set('posisi_jalan', posisiJalanValue);
             console.log('posisi_jalan value:', posisiJalanValue);
-            
-            // Show loading overlay
-            const loadingOverlay = document.getElementById('loadingOverlay');
-            const loadingText = document.getElementById('loadingText');
-            loadingOverlay.classList.add('active');
-            loadingText.textContent = 'Menyimpan data...';
             
             // Show SweetAlert loading animation
             let swalLoading = Swal.fire({
