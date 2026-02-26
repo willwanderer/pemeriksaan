@@ -277,6 +277,41 @@ function handleUpdateWithImage() {
             jsonResponse(['success' => false, 'message' => 'Data tidak ditemukan'], 404);
         }
         
+        // Get job name for folder creation - use existing folder structure
+        $namaPekerjaan = '';
+        $inisialAkunBelanja = '';
+        $inisialPenyedia = '';
+        $entityFolder = '';
+        
+        $jobQuery = "SELECT p.nama_pekerjaan, p.inisial_akun_belanja, p.inisial_penyedia, e.folder_name as entity_folder 
+                     FROM pekerjaan p 
+                     LEFT JOIN entitas e ON p.id_entitas = e.id_entitas 
+                     WHERE p.id_pekerjaan = ?";
+        $jobStmt = $conn->prepare($jobQuery);
+        $jobStmt->bind_param("i", $id_pekerjaan);
+        $jobStmt->execute();
+        $jobResult = $jobStmt->get_result();
+        if ($jobRow = $jobResult->fetch_assoc()) {
+            $namaPekerjaan = $jobRow['nama_pekerjaan'];
+            $inisialAkunBelanja = $jobRow['inisial_akun_belanja'];
+            $inisialPenyedia = $jobRow['inisial_penyedia'];
+            $entityFolder = $jobRow['entity_folder'];
+        }
+        $jobStmt->close();
+        
+        // Build folder name: {entity_folder}/{inisial_akun_belanja}_{inisial_penyedia}
+        if (empty($entityFolder)) {
+            $entityFolder = 'Default';
+        }
+        if (empty($inisialAkunBelanja)) {
+            $inisialAkunBelanja = 'JIJ';
+        }
+        if (empty($inisialPenyedia)) {
+            $inisialPenyedia = 'Default';
+        }
+        
+        $folderName = $entityFolder . '/' . strtoupper($inisialAkunBelanja) . '_' . strtoupper($inisialPenyedia);
+        
         // Prepare data array
         $data = [];
         
@@ -320,12 +355,13 @@ function handleUpdateWithImage() {
             }
         }
         
-        // Handle image uploads
-        $uploadDir = __DIR__ . '/../dokumen_pemeriksaan/';
+        // Handle image uploads - Save to existing job folder structure
+        // Folder structure: dokumen_pemeriksaan/{entity_folder}/{inisial_akun_belanja}_{inisial_penyedia}/Foto/
+        $baseUploadDir = __DIR__ . '/../dokumen_pemeriksaan/' . $folderName . '/Foto';
         
         // Create directory if not exists
-        if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0755, true);
+        if (!is_dir($baseUploadDir)) {
+            mkdir($baseUploadDir, 0755, true);
         }
         
         $photoFields = [
@@ -335,22 +371,35 @@ function handleUpdateWithImage() {
             'foto_lain' => 'foto_lain'
         ];
         
+        // Allowed image types
+        $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/jpg'];
+        
         foreach ($photoFields as $formField => $dbField) {
             if (isset($_FILES[$formField]) && $_FILES[$formField]['error'] === UPLOAD_ERR_OK) {
                 $file = $_FILES[$formField];
+                
+                // Validate file type
+                $fileType = mime_content_type($file['tmp_name']);
+                if (!in_array($fileType, $allowedTypes)) {
+                    jsonResponse(['success' => false, 'message' => 'Tipe file tidak diizinkan untuk ' . $formField . '. Hanya format gambar (JPEG, PNG, GIF, WebP) yang diperbolehkan.'], 400);
+                }
+                
                 $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
-                $filename = $type . '_' . $id . '_' . $formField . '_' . time() . '.' . $ext;
-                $targetPath = $uploadDir . $filename;
+                // Generate unique filename: {photoType}_{timestamp}_{random}.{extension}
+                $timestamp = time();
+                $random = substr(md5(uniqid(rand(), true)), 0, 6);
+                $filename = $formField . '_' . $timestamp . '_' . $random . '.' . strtolower($ext);
+                $targetPath = $baseUploadDir . '/' . $filename;
                 
                 if (move_uploaded_file($file['tmp_name'], $targetPath)) {
                     // Delete old photo if exists
                     if (!empty($existingData[$dbField])) {
-                        $oldFile = $uploadDir . basename($existingData[$dbField]);
+                        $oldFile = __DIR__ . '/../' . $existingData[$dbField];
                         if (file_exists($oldFile)) {
                             unlink($oldFile);
                         }
                     }
-                    $data[$dbField] = 'dokumen_pemeriksaan/' . $filename;
+                    $data[$dbField] = 'dokumen_pemeriksaan/' . $folderName . '/Foto/' . $filename;
                 }
             } else {
                 // Keep existing photo path if no new file uploaded
@@ -474,6 +523,41 @@ function handleCreateWithImage() {
             $data['id_sub_pekerjaan'] = $id_sub_pekerjaan;
         }
         
+        // Get job name for folder creation - use existing folder structure
+        $namaPekerjaan = '';
+        $inisialAkunBelanja = '';
+        $inisialPenyedia = '';
+        $entityFolder = '';
+        
+        $jobQuery = "SELECT p.nama_pekerjaan, p.inisial_akun_belanja, p.inisial_penyedia, e.folder_name as entity_folder 
+                     FROM pekerjaan p 
+                     LEFT JOIN entitas e ON p.id_entitas = e.id_entitas 
+                     WHERE p.id_pekerjaan = ?";
+        $jobStmt = $conn->prepare($jobQuery);
+        $jobStmt->bind_param("i", $id_pekerjaan);
+        $jobStmt->execute();
+        $jobResult = $jobStmt->get_result();
+        if ($jobRow = $jobResult->fetch_assoc()) {
+            $namaPekerjaan = $jobRow['nama_pekerjaan'];
+            $inisialAkunBelanja = $jobRow['inisial_akun_belanja'];
+            $inisialPenyedia = $jobRow['inisial_penyedia'];
+            $entityFolder = $jobRow['entity_folder'];
+        }
+        $jobStmt->close();
+        
+        // Build folder name: {entity_folder}/{inisial_akun_belanja}_{inisial_penyedia}
+        if (empty($entityFolder)) {
+            $entityFolder = 'Default';
+        }
+        if (empty($inisialAkunBelanja)) {
+            $inisialAkunBelanja = 'JIJ';
+        }
+        if (empty($inisialPenyedia)) {
+            $inisialPenyedia = 'Default';
+        }
+        
+        $folderName = $entityFolder . '/' . strtoupper($inisialAkunBelanja) . '_' . strtoupper($inisialPenyedia);
+        
         // Server-side auto-validation: Set status_kesesuaian based on road type and average thickness
         $jenis = $_POST['jenis'] ?? '';
         $tebal1 = isset($_POST['tebal1']) ? floatval($_POST['tebal1']) : 0;
@@ -505,12 +589,13 @@ function handleCreateWithImage() {
             error_log("Server-side validation: Jenis=$jenis, AvgThickness=$avgThickness, Status=$statusKesesuaian");
         }
         
-        // Handle image uploads
-        $uploadDir = __DIR__ . '/../dokumen_pemeriksaan/';
+        // Handle image uploads - Save to existing job folder structure
+        // Folder structure: dokumen_pemeriksaan/{entity_folder}/{inisial_akun_belanja}_{inisial_penyedia}/Foto/
+        $baseUploadDir = __DIR__ . '/../dokumen_pemeriksaan/' . $folderName . '/Foto';
         
         // Create directory if not exists
-        if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0755, true);
+        if (!is_dir($baseUploadDir)) {
+            mkdir($baseUploadDir, 0755, true);
         }
         
         $photoFields = [
@@ -520,15 +605,28 @@ function handleCreateWithImage() {
             'fotolain' => 'foto_lain'
         ];
         
+        // Allowed image types
+        $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/jpg'];
+        
         foreach ($photoFields as $formField => $dbField) {
             if (isset($_FILES[$formField]) && $_FILES[$formField]['error'] === UPLOAD_ERR_OK) {
                 $file = $_FILES[$formField];
+                
+                // Validate file type
+                $fileType = mime_content_type($file['tmp_name']);
+                if (!in_array($fileType, $allowedTypes)) {
+                    jsonResponse(['success' => false, 'message' => 'Tipe file tidak diizinkan untuk ' . $formField . '. Hanya format gambar (JPEG, PNG, GIF, WebP) yang diperbolehkan.'], 400);
+                }
+                
                 $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
-                $filename = $type . '_new_' . $formField . '_' . time() . '.' . $ext;
-                $targetPath = $uploadDir . $filename;
+                // Generate unique filename: {photoType}_{timestamp}_{random}.{extension}
+                $timestamp = time();
+                $random = substr(md5(uniqid(rand(), true)), 0, 6);
+                $filename = $formField . '_' . $timestamp . '_' . $random . '.' . strtolower($ext);
+                $targetPath = $baseUploadDir . '/' . $filename;
                 
                 if (move_uploaded_file($file['tmp_name'], $targetPath)) {
-                    $data[$dbField] = 'dokumen_pemeriksaan/' . $filename;
+                    $data[$dbField] = 'dokumen_pemeriksaan/' . $folderName . '/Foto/' . $filename;
                 }
             }
         }
@@ -541,21 +639,6 @@ function handleCreateWithImage() {
         $id = insertRecord($table, $data);
         
         if ($id) {
-            // If photos were uploaded with temporary names, rename them with correct ID
-            foreach ($photoFields as $formField => $dbField) {
-                if (isset($_FILES[$formField]) && $_FILES[$formField]['error'] === UPLOAD_ERR_OK) {
-                    $oldPath = $uploadDir . $type . '_new_' . $formField . '_' . time() . '.' . pathinfo($_FILES[$formField]['name'], PATHINFO_EXTENSION);
-                    $newFilename = $type . '_' . $id . '_' . $formField . '_' . time() . '.' . pathinfo($_FILES[$formField]['name'], PATHINFO_EXTENSION);
-                    $newPath = $uploadDir . $newFilename;
-                    
-                    if (file_exists($oldPath) && isset($data[$dbField])) {
-                        rename($oldPath, $newPath);
-                        // Update the record with the new filename
-                        $conn->query("UPDATE $table SET $dbField = 'dokumen_pemeriksaan/$newFilename' WHERE $idColumn = $id");
-                    }
-                }
-            }
-            
             logActivity('create', "Created new $type inspection record ID: $id for job: $id_pekerjaan");
             
             jsonResponse([
