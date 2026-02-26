@@ -229,6 +229,26 @@
                 justify-content: center;
             }
         }
+        
+        .table-section {
+            margin-bottom: 30px;
+        }
+        
+        .section-header {
+            color: #fff;
+            padding: 12px 15px;
+            font-size: 14px;
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .table-section table {
+            margin-bottom: 0;
+        }
+        
+        .table-section:last-child {
+            margin-bottom: 0;
+        }
     </style>
 </head>
 <body>
@@ -267,42 +287,105 @@
         </div>
 
         <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>No</th>
-                        <th>STA</th>
-                        <th>Jenis</th>
-                        <th colspan="4">Tebal (cm)</th>
-                        <th>Lebar Jalan (m)</th>
-                        <th colspan="2">Bahu Kiri</th>
-                        <th colspan="2">Bahu Kanan</th>
-                        <th>Kesesuaian</th>
-                        <th>Catatan</th>
-                        <th>Aksi</th>
-                    </tr>
-                    <tr>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th>Tebal 1</th>
-                        <th>Tebal 2</th>
-                        <th>Tebal 3</th>
-                        <th>Tebal 4</th>
-                        <th></th>
-                        <th>Lebar (m)</th>
-                        <th>Tebal (cm)</th>
-                        <th>Lebar (m)</th>
-                        <th>Tebal (cm)</th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody id="rekapanBody">
-                    <tr><td colspan="15" class="no-data">Pilih pekerjaan terlebih dahulu</td></tr>
-                </tbody>
-            </table>
+            <!-- Tabel AC-BC -->
+            <div class="table-section">
+                <h2 class="section-header" style="background: #667eea;">Tabel Pemeriksaan AC-BC (Asphalt Concrete - Binder Course)</h2>
+                <table class="data-table" id="tableACBC">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>STA</th>
+                            <th>Jenis</th>
+                            <th colspan="4">Tebal (cm)</th>
+                            <th>Lebar Jalan (m)</th>
+                            <th>Kesesuaian</th>
+                            <th>Catatan</th>
+                            <th>Aksi</th>
+                        </tr>
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th>Tebal 1</th>
+                            <th>Tebal 2</th>
+                            <th>Tebal 3</th>
+                            <th>Tebal 4</th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="rekapanBodyACBC">
+                        <tr><td colspan="11" class="no-data">Tidak ada data AC-BC</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Tabel AC-WC -->
+            <div class="table-section">
+                <h2 class="section-header" style="background: #764ba2;">Tabel Pemeriksaan AC-WC (Asphalt Concrete - Wearing Course)</h2>
+                <table class="data-table" id="tableACWC">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>STA</th>
+                            <th>Jenis</th>
+                            <th colspan="4">Tebal (cm)</th>
+                            <th>Lebar Jalan (m)</th>
+                            <th>Kesesuaian</th>
+                            <th>Catatan</th>
+                            <th>Aksi</th>
+                        </tr>
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th>Tebal 1</th>
+                            <th>Tebal 2</th>
+                            <th>Tebal 3</th>
+                            <th>Tebal 4</th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="rekapanBodyACWC">
+                        <tr><td colspan="11" class="no-data">Tidak ada data AC-WC</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Tabel Bahu Jalan -->
+            <div class="table-section">
+                <h2 class="section-header" style="background: #f59e0b;">Tabel Pemeriksaan Bahu Jalan</h2>
+                <table class="data-table" id="tableBahu">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>STA</th>
+                            <th colspan="2">Bahu Kiri</th>
+                            <th colspan="2">Bahu Kanan</th>
+                            <th>Catatan</th>
+                            <th>Aksi</th>
+                        </tr>
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th>Lebar (m)</th>
+                            <th>Tebal (cm)</th>
+                            <th>Lebar (m)</th>
+                            <th>Tebal (cm)</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="rekapanBodyBahu">
+                        <tr><td colspan="8" class="no-data">Tidak ada data Bahu Jalan</td></tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
@@ -421,7 +504,9 @@
             }
             
             if (!idPekerjaan) {
-                document.getElementById('rekapanBody').innerHTML = '<tr><td colspan="15" class="no-data">Pilih pekerjaan terlebih dahulu</td></tr>';
+                document.getElementById('rekapanBodyACBC').innerHTML = '<tr><td colspan="11" class="no-data">Pilih pekerjaan terlebih dahulu</td></tr>';
+                document.getElementById('rekapanBodyACWC').innerHTML = '<tr><td colspan="11" class="no-data">Pilih pekerjaan terlebih dahulu</td></tr>';
+                document.getElementById('rekapanBodyBahu').innerHTML = '<tr><td colspan="8" class="no-data">Pilih pekerjaan terlebih dahulu</td></tr>';
                 return;
             }
             
@@ -439,11 +524,15 @@
                     currentData = result.data;
                     renderTable();
                 } else {
-                    document.getElementById('rekapanBody').innerHTML = '<tr><td colspan="15" class="no-data">' + (result.message || 'Data tidak ditemukan') + '</td></tr>';
+                    document.getElementById('rekapanBodyACBC').innerHTML = '<tr><td colspan="11" class="no-data">' + (result.message || 'Data tidak ditemukan') + '</td></tr>';
+                    document.getElementById('rekapanBodyACWC').innerHTML = '<tr><td colspan="11" class="no-data">' + (result.message || 'Data tidak ditemukan') + '</td></tr>';
+                    document.getElementById('rekapanBodyBahu').innerHTML = '<tr><td colspan="8" class="no-data">' + (result.message || 'Data tidak ditemukan') + '</td></tr>';
                 }
             } catch (error) {
                 console.error('Error loading rekapan:', error);
-                document.getElementById('rekapanBody').innerHTML = '<tr><td colspan="15" class="no-data">Error: ' + error.message + '</td></tr>';
+                document.getElementById('rekapanBodyACBC').innerHTML = '<tr><td colspan="11" class="no-data">Error: ' + error.message + '</td></tr>';
+                document.getElementById('rekapanBodyACWC').innerHTML = '<tr><td colspan="11" class="no-data">Error: ' + error.message + '</td></tr>';
+                document.getElementById('rekapanBodyBahu').innerHTML = '<tr><td colspan="8" class="no-data">Error: ' + error.message + '</td></tr>';
             }
         }
         
@@ -457,56 +546,115 @@
             }
             
             if (filteredData.length === 0) {
-                document.getElementById('rekapanBody').innerHTML = `
-                    <tr>
-                        <td colspan="15">
-                            <div class="empty-state">
-                                <h3>Belum Ada Data</h3>
-                                <p>Silakan tambah data pemeriksaan jalan</p>
-                            </div>
-                        </td>
-                    </tr>
-                `;
+                document.getElementById('rekapanBodyACBC').innerHTML = '<tr><td colspan="11" class="no-data">Tidak ada data AC-BC</td></tr>';
+                document.getElementById('rekapanBodyACWC').innerHTML = '<tr><td colspan="11" class="no-data">Tidak ada data AC-WC</td></tr>';
+                document.getElementById('rekapanBodyBahu').innerHTML = '<tr><td colspan="8" class="no-data">Tidak ada data Bahu Jalan</td></tr>';
                 return;
             }
             
-            let html = '';
-            filteredData.forEach((data, index) => {
-                const statusClass = getStatusClass(data.status_kesesuaian);
-                const statusText = getStatusText(data.status_kesesuaian);
-                
-                html += `
-                    <tr data-id="${data.id_rekapan_jalan}">
-                        <td>${index + 1}</td>
-                        <td>${data.sta || '-'}</td>
-                        <td>${data.jenis_jalan || '-'}</td>
-                        <td>${formatNumber(data.tebal_1)}</td>
-                        <td>${formatNumber(data.tebal_2)}</td>
-                        <td>${formatNumber(data.tebal_3)}</td>
-                        <td>${formatNumber(data.tebal_4)}</td>
-                        <td>${formatNumber(data.lebar_jalan)}</td>
-                        <td>${formatNumber(data.lebar_bahu_kiri)}</td>
-                        <td>${formatNumber(data.tebal_bahu_kiri)}</td>
-                        <td>${formatNumber(data.lebar_bahu_kanan)}</td>
-                        <td>${formatNumber(data.tebal_bahu_kanan)}</td>
-                        <td class="${statusClass}">${statusText}</td>
-                        <td class="catatan">${data.catatan || '-'}</td>
-                        <td>
-                            <button class="btn-action btn-view" onclick="viewData(${data.id_rekapan_jalan})" title="Lihat">
-                                <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-                            </button>
-                            <button class="btn-action btn-edit" onclick="editData(${data.id_rekapan_jalan})" title="Edit">
-                                <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
-                            </button>
-                            <button class="btn-action btn-delete" onclick="deleteData(${data.id_rekapan_jalan})" title="Hapus">
-                                <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
-                            </button>
-                        </td>
-                    </tr>
-                `;
-            });
+            // Filter data for each table
+            // AC-BC: jenis_jalan = 'AC-BC'
+            const acbcData = filteredData.filter(d => d.jenis_jalan === 'AC-BC');
+            // AC-WC: jenis_jalan = 'AC-WC'
+            const acwcData = filteredData.filter(d => d.jenis_jalan === 'AC-WC');
+            // Bahu Jalan: has value in any bahu field (lebar_bahu_kiri, tebal_bahu_kiri, lebar_bahu_kanan, tebal_bahu_kanan)
+            const bahuData = filteredData.filter(d => 
+                (d.lebar_bahu_kiri && d.lebar_bahu_kiri > 0) ||
+                (d.tebal_bahu_kiri && d.tebal_bahu_kiri > 0) ||
+                (d.lebar_bahu_kanan && d.lebar_bahu_kanan > 0) ||
+                (d.tebal_bahu_kanan && d.tebal_bahu_kanan > 0)
+            );
             
-            document.getElementById('rekapanBody').innerHTML = html;
+            // Render AC-BC table
+            if (acbcData.length === 0) {
+                document.getElementById('rekapanBodyACBC').innerHTML = '<tr><td colspan="11" class="no-data">Tidak ada data AC-BC</td></tr>';
+            } else {
+                let html = '';
+                acbcData.forEach((data, index) => {
+                    html += renderRowAC(data, index);
+                });
+                document.getElementById('rekapanBodyACBC').innerHTML = html;
+            }
+            
+            // Render AC-WC table
+            if (acwcData.length === 0) {
+                document.getElementById('rekapanBodyACWC').innerHTML = '<tr><td colspan="11" class="no-data">Tidak ada data AC-WC</td></tr>';
+            } else {
+                let html = '';
+                acwcData.forEach((data, index) => {
+                    html += renderRowAC(data, index);
+                });
+                document.getElementById('rekapanBodyACWC').innerHTML = html;
+            }
+            
+            // Render Bahu Jalan table
+            if (bahuData.length === 0) {
+                document.getElementById('rekapanBodyBahu').innerHTML = '<tr><td colspan="8" class="no-data">Tidak ada data Bahu Jalan</td></tr>';
+            } else {
+                let html = '';
+                bahuData.forEach((data, index) => {
+                    html += renderRowBahu(data, index);
+                });
+                document.getElementById('rekapanBodyBahu').innerHTML = html;
+            }
+        }
+        
+        // Render row for AC-BC and AC-WC tables
+        function renderRowAC(data, index) {
+            const statusClass = getStatusClass(data.status_kesesuaian);
+            const statusText = getStatusText(data.status_kesesuaian);
+            
+            return `
+                <tr data-id="${data.id_rekapan_jalan}">
+                    <td>${index + 1}</td>
+                    <td>${data.sta || '-'}</td>
+                    <td>${data.jenis_jalan || '-'}</td>
+                    <td>${formatNumber(data.tebal_1)}</td>
+                    <td>${formatNumber(data.tebal_2)}</td>
+                    <td>${formatNumber(data.tebal_3)}</td>
+                    <td>${formatNumber(data.tebal_4)}</td>
+                    <td>${formatNumber(data.lebar_jalan)}</td>
+                    <td class="${statusClass}">${statusText}</td>
+                    <td class="catatan">${data.catatan || '-'}</td>
+                    <td>
+                        <button class="btn-action btn-view" onclick="viewData(${data.id_rekapan_jalan})" title="Lihat">
+                            <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+                        </button>
+                        <button class="btn-action btn-edit" onclick="editData(${data.id_rekapan_jalan})" title="Edit">
+                            <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                        </button>
+                        <button class="btn-action btn-delete" onclick="deleteData(${data.id_rekapan_jalan})" title="Hapus">
+                            <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                        </button>
+                    </td>
+                </tr>
+            `;
+        }
+        
+        // Render row for Bahu Jalan table
+        function renderRowBahu(data, index) {
+            return `
+                <tr data-id="${data.id_rekapan_jalan}">
+                    <td>${index + 1}</td>
+                    <td>${data.sta || '-'}</td>
+                    <td>${formatNumber(data.lebar_bahu_kiri)}</td>
+                    <td>${formatNumber(data.tebal_bahu_kiri)}</td>
+                    <td>${formatNumber(data.lebar_bahu_kanan)}</td>
+                    <td>${formatNumber(data.tebal_bahu_kanan)}</td>
+                    <td class="catatan">${data.catatan || '-'}</td>
+                    <td>
+                        <button class="btn-action btn-view" onclick="viewData(${data.id_rekapan_jalan})" title="Lihat">
+                            <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+                        </button>
+                        <button class="btn-action btn-edit" onclick="editData(${data.id_rekapan_jalan})" title="Edit">
+                            <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                        </button>
+                        <button class="btn-action btn-delete" onclick="deleteData(${data.id_rekapan_jalan})" title="Hapus">
+                            <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                        </button>
+                    </td>
+                </tr>
+            `;
         }
         
         // Filter data

@@ -298,27 +298,27 @@
             <div class="section-title">Data Utama</div>
             <div class="form-row">
                 <div class="form-group">
-                    <label for="id_sub_pekerjaan">Sub Pekerjaan <span style="color:red">*</span></label>
-                    <select id="id_sub_pekerjaan" name="id_sub_pekerjaan" required>
+                    <label for="id_sub_pekerjaan">Sub Pekerjaan</label>
+                    <select id="id_sub_pekerjaan" name="id_sub_pekerjaan">
                         <option value="">Pilih Sub Pekerjaan</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label for="sta">STA</label>
-                    <input type="text" id="sta" name="sta" placeholder="STA 0+000" required>
+                    <input type="text" id="sta" name="sta" placeholder="STA 0+000">
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group">
                     <label for="STA_type">Tipe STA</label>
                     <select id="STA_type" name="STA_type">
-                        <option value="STA">STA</option>
+                        <option value="STA" selected>STA</option>
                         <option value="KM">KM</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label for="jenis">Jenis Jalan</label>
-                    <select id="jenis" name="jenis" required>
+                    <select id="jenis" name="jenis">
                         <option value="">Pilih Jenis Jalan</option>
                         <option value="AC-WC">AC-WC (Asphalt Concrete - Wearing Course)</option>
                         <option value="AC-BC">AC-BC (Asphalt Concrete - Binder Course)</option>
@@ -335,21 +335,21 @@
             <div class="section-title">Data Tebal Perkerasan</div>
             <div class="form-row">
                 <div class="form-group">
-                    <label for="tebal1">Tebal 1 (cm)</label>
-                    <input type="number" id="tebal1" name="tebal1" step="0.01" placeholder="4,00/6,00" required>
+                    <label for="tebal1">Tebal 1 (mm)</label>
+                    <input type="number" id="tebal1" name="tebal1" step="0.01" placeholder="4,00/6,00">
                 </div>
                 <div class="form-group">
-                    <label for="tebal2">Tebal 2 (cm)</label>
+                    <label for="tebal2">Tebal 2 (mm)</label>
                     <input type="number" id="tebal2" name="tebal2" step="0.01" placeholder="4,00/6,00">
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group">
-                    <label for="tebal3">Tebal 3 (cm)</label>
+                    <label for="tebal3">Tebal 3 (mm)</label>
                     <input type="number" id="tebal3" name="tebal3" step="0.01" placeholder="4,00/6,00">
                 </div>
                 <div class="form-group">
-                    <label for="tebal4">Tebal 4 (cm)</label>
+                    <label for="tebal4">Tebal 4 (mm)</label>
                     <input type="number" id="tebal4" name="tebal4" step="0.01" placeholder="4,00/6,00">
                 </div>
             </div>
@@ -358,8 +358,8 @@
             <div class="section-title">Data Lebar Jalan</div>
             <div class="form-row">
                 <div class="form-group">
-                    <label for="lebarjalan">Lebar Jalan (m)</label>
-                    <input type="number" id="lebarjalan" name="lebarjalan" step="0.01" placeholder="7.00" required>
+                    <label for="lebarjalan">Lebar Jalan (cm)</label>
+                    <input type="number" id="lebarjalan" name="lebarjalan" step="0.01" placeholder="7.00">
                 </div>
             </div>
 
@@ -394,7 +394,7 @@
              <div class="form-row">
                 <div class="form-group">
                     <label for="statusKesesuaian">Status Kesesuaian</label>
-                    <select id="statusKesesuaian" name="statusKesesuaian" required>
+                    <select id="statusKesesuaian" name="statusKesesuaian">
                         <option value="sesuai">Sesuai</option>
                         <option value="tidak_sesuai">Tidak Sesuai</option>
                         <option value="perlu_perbaikan">Perlu Perbaikan</option>
@@ -597,6 +597,13 @@
                 loadSubPekerjaan(idPekerjaan);
             }
             
+            // Check if STA is passed in URL and populate it
+            const staFromUrl = urlParams.get('sta');
+            if (staFromUrl) {
+                document.getElementById('sta').value = staFromUrl;
+                console.log('STA from URL:', staFromUrl);
+            }
+            
             // Auto-get GPS location on page load
             autoGetLocation();
         });
@@ -684,6 +691,81 @@
                 }
             });
         });
+        
+        // Auto-fill Status Kesesuaian based on road type and average thickness
+        function calculateAverageThickness() {
+            const tebal1 = parseFloat(document.getElementById('tebal1').value) || 0;
+            const tebal2 = parseFloat(document.getElementById('tebal2').value) || 0;
+            const tebal3 = parseFloat(document.getElementById('tebal3').value) || 0;
+            const tebal4 = parseFloat(document.getElementById('tebal4').value) || 0;
+            
+            // Count non-zero values
+            const values = [tebal1, tebal2, tebal3, tebal4].filter(v => v > 0);
+            
+            if (values.length === 0) return 0;
+            
+            // Calculate average
+            const sum = values.reduce((a, b) => a + b, 0);
+            return sum / values.length;
+        }
+        
+        function updateStatusKesesuaian() {
+            const jenis = document.getElementById('jenis').value;
+            const avgThickness = calculateAverageThickness();
+            const statusSelect = document.getElementById('statusKesesuaian');
+            
+            // Only auto-fill for AC-WC and AC-BC road types
+            if (jenis === 'AC-WC' || jenis === 'AC-BC') {
+                let status = '';
+                
+                if (jenis === 'AC-WC') {
+                    // AC-WC: if avg thickness > 3.9 cm → "sesuai", if ≤ 3.9 cm → "tidak_sesuai"
+                    if (avgThickness > 3.9) {
+                        status = 'sesuai';
+                    } else {
+                        status = 'tidak_sesuai';
+                    }
+                } else if (jenis === 'AC-BC') {
+                    // AC-BC: if avg thickness > 5.9 cm → "sesuai", if ≤ 5.9 cm → "tidak_sesuai"
+                    if (avgThickness > 5.9) {
+                        status = 'sesuai';
+                    } else {
+                        status = 'tidak_sesuai';
+                    }
+                }
+                
+                // Update the select value
+                statusSelect.value = status;
+                console.log('Auto-filled Status Kesesuaian:', status, 'for', jenis, 'with avg thickness:', avgThickness.toFixed(2), 'cm');
+            }
+        }
+        
+        // Add event listeners for real-time auto-fill
+        document.getElementById('jenis').addEventListener('change', updateStatusKesesuaian);
+        document.getElementById('tebal1').addEventListener('input', updateStatusKesesuaian);
+        document.getElementById('tebal2').addEventListener('input', updateStatusKesesuaian);
+        document.getElementById('tebal3').addEventListener('input', updateStatusKesesuaian);
+        document.getElementById('tebal4').addEventListener('input', updateStatusKesesuaian);
+        
+        // Function to reset form except STA
+        function resetFormExceptSTA(newSTA) {
+            // Get current URL params
+            const urlParams = new URLSearchParams(window.location.search);
+            const idPekerjaanVal = urlParams.get('id_pekerjaan');
+            const idSubPekerjaanVal = urlParams.get('id_sub_pekerjaan');
+            
+            // Build redirect URL with STA parameter
+            let redirectUrl = 'input_data_jalan.php?id_pekerjaan=' + idPekerjaanVal;
+            if (idSubPekerjaanVal) {
+                redirectUrl += '&id_sub_pekerjaan=' + idSubPekerjaanVal;
+            }
+            if (newSTA) {
+                redirectUrl += '&sta=' + encodeURIComponent(newSTA);
+            }
+            
+            // Redirect to the form
+            window.location.href = redirectUrl;
+        }
 
         document.getElementById('roadDataForm').addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -693,28 +775,124 @@
                 return;
             }
             
-            const formData = new FormData(this);
-            formData.append('type', 'jalan');
-            formData.append('id_pekerjaan', idPekerjaan);
-            formData.append('id_sub_pekerjaan', idSubPekerjaan || null);
+            // Validate and collect empty fields for notification
+            const emptyFields = [];
+            const fieldLabels = {
+                'id_sub_pekerjaan': 'Sub Pekerjaan',
+                'sta': 'STA',
+                'jenis': 'Jenis Jalan',
+                'STA_type': 'Tipe STA',
+                'tebal1': 'Tebal 1',
+                'tebal2': 'Tebal 2',
+                'tebal3': 'Tebal 3',
+                'tebal4': 'Tebal 4',
+                'lebarjalan': 'Lebar Jalan',
+                'lebarkiri': 'Lebar Bahu Kiri',
+                'tekalkiri': 'Tebal Bahu Kiri',
+                'lebarkanan': 'Lebar Bahu Kanan',
+                'tekalkanan': 'Tebal Bahu Kanan',
+                'statusKesesuaian': 'Status Kesesuaian',
+                'catatan': 'Catatan',
+                'latitude': 'Latitude',
+                'longitude': 'Longitude'
+            };
+            
+            // Check all form fields
+            const form = this;
+            const formData = new FormData(form);
+            
+            for (const [key, value] of formData.entries()) {
+                if (fieldLabels[key] && (value === '' || value === null || value === undefined)) {
+                    emptyFields.push(fieldLabels[key]);
+                }
+            }
+            
+            // Also check select elements that might have empty values
+            const selectElements = form.querySelectorAll('select');
+            selectElements.forEach(select => {
+                if (select.value === '' && fieldLabels[select.name]) {
+                    if (!emptyFields.includes(fieldLabels[select.name])) {
+                        emptyFields.push(fieldLabels[select.name]);
+                    }
+                }
+            });
+            
+            // Show warning if there are empty fields, but still allow submission
+            let warningMessage = '';
+            if (emptyFields.length > 0) {
+                warningMessage = '\n\nField berikut tidak diisi:\n- ' + emptyFields.join('\n- ');
+                console.log('Empty fields detected:', emptyFields);
+            }
+            
+            const formDataToSend = new FormData(form);
+            formDataToSend.append('type', 'jalan');
+            formDataToSend.append('id_pekerjaan', idPekerjaan);
+            formDataToSend.append('id_sub_pekerjaan', idSubPekerjaan || null);
             
             try {
                 console.log('Sending data with images...');
                 const response = await fetch('api/proses_rekapan.php?action=create_with_image', {
                     method: 'POST',
-                    body: formData
+                    body: formDataToSend
                 });
                 console.log('Response status:', response.status);
                 const result = await response.json();
                 console.log('Response result:', result);
                 
                 if (result.success) {
-                    Swal.fire('Berhasil', 'Data berhasil disimpan!', 'success').then(() => {
-                        let redirectUrl = 'rekapan_pemeriksaan_jij.php?id_pekerjaan=' + idPekerjaan;
-                        if (idSubPekerjaan) {
-                            redirectUrl += '&id_sub=' + idSubPekerjaan;
+                    // Store current STA value for potential reuse
+                    const currentSTA = document.getElementById('sta').value;
+                    const currentJenis = document.getElementById('jenis').value;
+                    
+                    let successMessage = 'Data berhasil disimpan!';
+                    if (emptyFields.length > 0) {
+                        successMessage += '\n\nCatatan: Field berikut tidak diisi:\n- ' + emptyFields.join('\n- ');
+                    }
+                    
+                    // Show popup with two options
+                    Swal.fire({
+                        title: 'Berhasil',
+                        html: successMessage + '<br><br>Pilih opsi untuk melanjutkan:',
+                        icon: 'success',
+                        showCancelButton: true,
+                        confirmButtonText: 'Lanjut ke STA Berikutnya',
+                        cancelButtonText: 'Masih di STA saat ini',
+                        reverseButtons: false
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // User clicked "Lanjut ke STA Berikutnya" - increment STA by 100
+                            let newSTA = currentSTA;
+                            if (currentSTA) {
+                                // Parse STA format (e.g., "0+100" or "1+500")
+                                const staMatch = currentSTA.match(/^(\d+)\+(\d+)$/);
+                                if (staMatch) {
+                                    const prefix = parseInt(staMatch[1], 10);
+                                    let suffix = parseInt(staMatch[2], 10);
+                                    suffix += 100;
+                                    
+                                    // Handle overflow (e.g., 0+900 + 100 = 1+000)
+                                    if (suffix >= 1000) {
+                                        prefix += Math.floor(suffix / 1000);
+                                        suffix = suffix % 1000;
+                                    }
+                                    newSTA = prefix + '+' + suffix.toString().padStart(3, '0');
+                                } else {
+                                    // Try parsing just a number
+                                    const numMatch = currentSTA.match(/^(\d+)$/);
+                                    if (numMatch) {
+                                        newSTA = (parseInt(numMatch[1], 10) + 100).toString();
+                                    }
+                                }
+                            }
+                            console.log('Incrementing STA:', currentSTA, '->', newSTA);
+                            
+                            // Reload page with new STA, clear other fields
+                            resetFormExceptSTA(newSTA);
+                        } else if (result.dismiss === Swal.DismissReason.cancel) {
+                            // User clicked "Masih di STA saat ini" - keep same STA
+                            console.log('Keeping same STA:', currentSTA);
+                            resetFormExceptSTA(currentSTA);
                         }
-                        window.location.href = redirectUrl;
                     });
                 } else {
                     Swal.fire('Gagal', result.message || 'Gagal menyimpan data', 'error');
