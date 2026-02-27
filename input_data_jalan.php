@@ -559,21 +559,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="form-row">
                 <div class="form-group">
                     <label for="tebal1">Tebal 1 (mm)</label>
-                    <input type="text" id="tebal1" name="tebal1" class="decimal-mask" placeholder="4,0/6,0">
+                    <input type="text" inputmode="decimal" id="tebal1" name="tebal1" class="decimal-mask" placeholder="4,0/6,0">
                 </div>
                 <div class="form-group">
                     <label for="tebal2">Tebal 2 (mm)</label>
-                    <input type="text" id="tebal2" name="tebal2" class="decimal-mask" placeholder="4,0/6,0">
+                    <input type="text" inputmode="decimal" id="tebal2" name="tebal2" class="decimal-mask" placeholder="4,0/6,0">
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group">
                     <label for="tebal3">Tebal 3 (mm)</label>
-                    <input type="text" id="tebal3" name="tebal3" class="decimal-mask" placeholder="4,0/6,0">
+                    <input type="text" inputmode="decimal" id="tebal3" name="tebal3" class="decimal-mask" placeholder="4,0/6,0">
                 </div>
                 <div class="form-group">
                     <label for="tebal4">Tebal 4 (mm)</label>
-                    <input type="text" id="tebal4" name="tebal4" class="decimal-mask" placeholder="4,0/6,0">
+                    <input type="text" inputmode="decimal" id="tebal4" name="tebal4" class="decimal-mask" placeholder="4,0/6,0">
                 </div>
             </div>
 
@@ -582,7 +582,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="form-row">
                 <div class="form-group">
                     <label for="lebarjalan">Lebar Jalan (m)</label>
-                    <input type="text" id="lebarjalan" name="lebarjalan" class="decimal-mask" placeholder="3,0/4,0">
+                    <input type="text" inputmode="decimal" id="lebarjalan" name="lebarjalan" class="decimal-mask" placeholder="3,0/4,0">
                 </div>
             </div>
 
