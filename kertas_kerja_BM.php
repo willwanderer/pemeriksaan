@@ -22,7 +22,7 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
         }
 
@@ -151,12 +151,13 @@
             background: #fff;
             border-radius: 12px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-            overflow: hidden;
+            overflow-x: auto;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
+            min-width: 1200px;
         }
 
         thead {
@@ -169,11 +170,12 @@
             text-align: left;
             font-weight: 600;
             font-size: 14px;
+            white-space: nowrap;
         }
 
         tbody tr {
             border-bottom: 1px solid #eee;
-            transition: background 0.2s ease;
+            transition: background 0;
         }
 
         tbody tr:hover {
@@ -184,9 +186,88 @@
             padding: 15px;
             font-size: 14px;
             color: #333;
+            vertical-align: top;
         }
 
-        .btn-detail, .btn-delete {
+        .category-cell {
+            vertical-align: top !important;
+            width: 200px;
+            background: linear-gradient(135deg, #f8f9ff 0%, #eef2ff 100%);
+        }
+
+        .category-header {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .category-title {
+            font-weight: 700;
+            font-size: 15px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .category-count {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .category-total {
+            font-weight: 600;
+            color: #667eea;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+
+        .expand-btn {
+            cursor: pointer;
+            color: #667eea;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+            background: none;
+            border: none;
+        }
+
+        .expand-btn:hover {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .expand-icon {
+            transition: transform 0.3s ease;
+            display: inline-block;
+        }
+
+        .expand-icon.expanded {
+            transform: rotate(90deg);
+        }
+
+        .child-row {
+            display: none;
+        }
+
+        .child-row.show {
+            display: table-row;
+        }
+
+        .child-row td {
+            background: #fafbfc;
+            border-top: 1px dashed #e0e0e0;
+        }
+
+        .category-row td {
+            padding: 12px 15px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .detail-btn {
             background: transparent;
             border: none;
             padding: 6px;
@@ -198,39 +279,80 @@
             justify-content: center;
         }
 
-        .btn-detail svg, .btn-delete svg {
+        .detail-btn svg {
             width: 18px;
             height: 18px;
         }
 
-        .btn-detail {
+        .detail-btn.edit {
             color: #667eea;
         }
 
-        .btn-detail:hover {
+        .detail-btn.edit:hover {
             background: #667eea;
         }
 
-        .btn-detail:hover svg {
+        .detail-btn.edit:hover svg {
             fill: #fff;
         }
 
-        .btn-delete {
+        .detail-btn.view {
+            color: #38ef7d;
+        }
+
+        .detail-btn.view:hover {
+            background: #38ef7d;
+        }
+
+        .detail-btn.view:hover svg {
+            fill: #fff;
+        }
+
+        .detail-btn.delete {
             color: #e74c3c;
         }
 
-        .btn-delete:hover {
+        .detail-btn.delete:hover {
             background: #e74c3c;
         }
 
-        .btn-delete:hover svg {
+        .detail-btn.delete:hover svg {
             fill: #fff;
         }
+
+        .badge-tanah { background: #fff3e0; color: #e65100; }
+        .badge-peralatan { background: #e3f2fd; color: #1565c0; }
+        .badge-jij { background: #e8f5e9; color: #2e7d32; }
+        .badge-gedung { background: #f3e5f5; color: #7b1fa2; }
+        .badge-atl { background: #fff8e1; color: #f57f17; }
+        .badge-al { background: #fce4ec; color: #c2185b; }
 
         .no-data {
             text-align: center;
             padding: 50px;
             color: #999;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .grand-total-section {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(56, 239, 125, 0.3);
+        }
+
+        .grand-total-section h3 {
+            margin: 0 0 10px 0;
+            font-size: 18px;
+        }
+
+        .grand-total-section .grand-total-value {
+            font-size: 24px;
+            font-weight: 700;
         }
 
         .back-btn {
@@ -248,6 +370,7 @@
             cursor: pointer;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
             transition: all 0.3s ease;
+            z-index: 1000;
         }
 
         .back-btn:hover {
@@ -312,6 +435,13 @@
             <div class="header-left">
                 <h1>Kertas Kerja Belanja Modal</h1>
                 <p id="entityInfo">Daftar belanja modal yang terdaftar</p>
+                <br>
+                <div class="search-box">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                    </svg>
+                    <input type="text" id="searchInput" placeholder="Cari data..." oninput="filterData()">
+                </div>
             </div>
             <button class="btn-tambah" onclick="window.location.href='tambah_pekerjaan.php?id_entitas=' + getEntityId()">
                 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -320,35 +450,14 @@
                 Tambah Pekerjaan
             </button>
         </div>
-        <div class="header">
-            <div class="search-box">
-                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
-                </svg>
-                <input type="text" id="searchInput" placeholder="Cari data..." oninput="filterData()">
-            </div>
+
+        <div id="categorySections">
+            <!-- Single table will be rendered here -->
         </div>
 
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>No</th>
-                        <th>Nama Pekerjaan</th>
-                        <th>Status</th>
-                        <th>Penyedia</th>
-                        <th>Nomor Kontrak</th>
-                        <th>Nilai Kontrak</th>
-                        <th>Tanggal Kontrak</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody id="pekerjaanTableBody">
-                    <!-- Data will be loaded from database -->
-                </tbody>
-                            
-                </tbody>
-            </table>
+        <div class="grand-total-section" id="grandTotalSection" style="display: none;">
+            <h3>Total Keseluruhan</h3>
+            <div class="grand-total-value" id="grandTotalValue">Rp 0</div>
         </div>
     </div>
 
@@ -362,12 +471,25 @@
         // Store original data for filtering
         let allPekerjaanData = [];
 
+        // Category configuration
+        const categoryConfig = {
+            'TL': { name: 'Tanah', class: 'badge-tanah', icon: '🌍' },
+            'PM': { name: 'Peralatan dan Mesin', class: 'badge-peralatan', icon: '⚙️' },
+            'JIJ': { name: 'Jalan, Irigasi, dan Jaringan', class: 'badge-jij', icon: '🛣️' },
+            'BG': { name: 'Gedung dan Bangunan', class: 'badge-gedung', icon: '🏢' },
+            'ATL': { name: 'Aset Tetap Lainnya', class: 'badge-atl', icon: '📦' },
+            'AL': { name: 'Aset Lainnya', class: 'badge-al', icon: '📋' }
+        };
+
         // Filter data based on search input
         function filterData() {
             const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
             
+            console.log('Search term:', searchTerm);
+            
             if (!searchTerm) {
-                renderPekerjaan(allPekerjaanData);
+                console.log('No search term, rendering all data');
+                renderPekerjaan(allPekerjaanData, true); // Show all data when search is empty
                 return;
             }
             
@@ -389,7 +511,8 @@
                 );
             });
             
-            renderPekerjaan(filteredData);
+            console.log('Filtered data count:', filteredData.length, 'expandAll: true');
+            renderPekerjaan(filteredData, true); // Expand all when searching
         }
 
         // Load pekerjaan from database
@@ -411,82 +534,219 @@
                     apiUrl += '?id_entitas=' + idEntitas;
                 }
                 
+                console.log('Fetching from:', apiUrl);
+                
                 const response = await fetch(apiUrl);
                 const result = await response.json();
                 
+                console.log('API result:', result);
+                
                 if (result.success) {
                     allPekerjaanData = result.data || [];
+                    console.log('Loaded data count:', allPekerjaanData.length);
+                    if (allPekerjaanData.length > 0) {
+                        console.log('First item sample:', JSON.stringify(allPekerjaanData[0]));
+                    }
                     renderPekerjaan(allPekerjaanData);
+                } else {
+                    console.error('API error:', result.message);
                 }
             } catch (error) {
                 console.error('Error loading pekerjaan:', error);
             }
         }
 
-        function renderPekerjaan(pekerjaanList) {
-            const tbody = document.getElementById('pekerjaanTableBody');
-            
-            if (pekerjaanList.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; padding: 30px;">Tidak ada data pekerjaan</td></tr>';
-                return;
-            }
-            
-            let html = '';
-            pekerjaanList.forEach((pekerjaan, index) => {
-                const nilaiKontrak = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(pekerjaan.nilai_kontrak || pekerjaan.nilaikontrak || 0);
-                const tanggalKontrak = pekerjaan.tanggal_kontrak || pekerjaan.tanggalkontrak || '-';
+        function renderPekerjaan(pekerjaanList, expandAll = true) {
+            try {
+                const container = document.getElementById('categorySections');
+                const grandTotalSection = document.getElementById('grandTotalSection');
                 
-                html += '<tr>';
-                html += '<td data-label="No">' + (index + 1) + '</td>';
-                html += '<td data-label="Nama Pekerjaan">';
-                html += '<div class="job-name-cell">';
-                html += '<span class="job-name">' + (pekerjaan.nama_pekerjaan || '-') + '</span>';
-                html += '<div class="job-badges">';
-                if (pekerjaan.nama_akun_belanja || pekerjaan.inisial_akun_belanja) {
-                    html += '<span class="job-badge jenis">' + (pekerjaan.nama_akun_belanja || pekerjaan.inisial_akun_belanja || '') + '</span>';
-                }
-                if (pekerjaan.skpd) {
-                    html += '<span class="job-badge skpd">' + pekerjaan.skpd + '</span>';
-                }
-                html += '</div></div></td>';
+                console.log('Rendering pekerjaan:', pekerjaanList);
                 
-                // Status badge - based on PHO
-                const endDate = pekerjaan.latest_addendum_end || pekerjaan.tanggal_selesai || pekerjaan.tanggal_kontrak;
-                const untilDate = pekerjaan.pho_date || new Date().toISOString().split('T')[0];
-                let keterlambatan = 0;
-                if (endDate) {
-                    const end = new Date(endDate);
-                    const until = new Date(untilDate);
-                    const diffTime = until - end;
-                    keterlambatan = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                if (!pekerjaanList || pekerjaanList.length === 0) {
+                    container.innerHTML = '<div class="no-data">Tidak ada data pekerjaan</div>';
+                    grandTotalSection.style.display = 'none';
+                    return;
                 }
-                const isCompleted = !!pekerjaan.pho_date;
-                html += '<td data-label="Status">';
-                if (isCompleted) {
-                    html += '<span class="job-badge" style="background:#e8f5e9;color:#2e7d32;">Selesai</span>';
+                
+                // Add OTH to category config
+                categoryConfig['OTH'] = { name: 'Lainnya', class: '', icon: '📄' };
+                
+                // Group pekerjaan by category
+                const groupedData = {};
+                pekerjaanList.forEach(pekerjaan => {
+                    let category = pekerjaan.inisial_akun_belanja || 'OTH';
+                    // Map to predefined categories or use OTH for others
+                    if (!['TL', 'PM', 'JIJ', 'BG', 'ATL', 'AL'].includes(category)) {
+                        category = 'OTH'; // Other
+                    }
+                    if (!groupedData[category]) {
+                        groupedData[category] = [];
+                    }
+                    groupedData[category].push(pekerjaan);
+                });
+                
+                console.log('Grouped data:', groupedData);
+                
+                // Calculate grand total
+                let grandTotal = 0;
+                
+                // Define category order
+                const categoryOrder = ['TL', 'PM', 'JIJ', 'BG', 'ATL', 'AL', 'OTH'];
+                
+                // Build table - each category header as separate row, followed by its pekerjaan
+                let html = '<div class="table-container"><table id="kertasKerjaTable"><thead><tr>';
+                html += '<th style="width:50px;">No</th>';
+                html += '<th>Jenis Belanja Modal</th>';
+                html += '<th>Nama Pekerjaan</th>';
+                html += '<th>Status</th>';
+                html += '<th>Penyedia</th>';
+                html += '<th>Nomor Kontrak</th>';
+                html += '<th>Nilai Kontrak</th>';
+                html += '<th>Tanggal Kontrak</th>';
+                html += '<th>Aksi</th>';
+                html += '</tr></thead><tbody>';
+                
+                let rowNumber = 1;
+                
+                categoryOrder.forEach((category) => {
+                    if (!groupedData[category] || groupedData[category].length === 0) return;
+                    
+                    const categoryData = groupedData[category];
+                    const config = categoryConfig[category] || { name: 'Lainnya', class: '', icon: '📄' };
+                    
+                    // Calculate category total
+                    let categoryTotal = 0;
+                    categoryData.forEach(pekerjaan => {
+                        categoryTotal += parseFloat(pekerjaan.nilai_kontrak || pekerjaan.nilaikontrak || 0);
+                    });
+                    grandTotal += categoryTotal;
+                    
+                    const formattedTotal = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(categoryTotal);
+                    const categoryId = 'cat-' + category;
+                    
+                    // First row - Category header (standalone row)
+                    const iconDisplay = expandAll ? '▼' : '▶';
+                    html += '<tr class="category-row" style="background: linear-gradient(135deg, #f8f9ff 0%, #eef2ff 100%);">';
+                    html += '<td data-label="No" style="text-align:center;">';
+                    html += '<button class="expand-btn" onclick="toggleCategory(\'' + categoryId + '\')" title="Expand/Collapse">';
+                    html += '<span class="expand-icon" id="icon-' + categoryId + '">' + iconDisplay + '</span>';
+                    html += '</button>';
+                    html += '</td>';
+                    html += '<td data-label="Jenis Belanja Modal" colspan="8" style="padding:12px 15px;">';
+                    html += '<div style="display:flex;flex-wrap:nowrap;justify-content:space-between;align-items:center;width:100%;">';
+                    html += '<span style="font-size:15px;font-weight:700;white-space:nowrap;margin-right:15px;">' + config.icon + ' ' + config.name + ' (' + categoryData.length + ' pekerjaan)</span>';
+                    html += '<span style="font-weight:600;color:#667eea;white-space:nowrap;">Total: ' + formattedTotal + '</span>';
+                    html += '</div>';
+                    html += '</td></tr>';
+                    
+                    // Each pekerjaan as separate row
+                    categoryData.forEach((pekerjaan, index) => {
+                        const nilaiKontrak = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(pekerjaan.nilai_kontrak || pekerjaan.nilaikontrak || 0);
+                        const tanggalKontrak = pekerjaan.tanggal_kontrak || pekerjaan.tanggalkontrak || '-';
+                        
+                        // When searching (expandAll=true), show all rows; otherwise show only first one
+                        const displayStyle = (expandAll || index === 0) ? 'style="display:table-row;"' : 'style="display:none;"';
+                        
+                        html += '<tr class="child-row ' + categoryId + '"' + displayStyle + '>';
+                        html += '<td data-label="No" style="text-align:center;">' + rowNumber + '</td>';
+                        html += '<td data-label="Jenis Belanja Modal" style="color:#667eea;font-weight:500;">' + config.name + '</td>';
+                        html += '<td data-label="Nama Pekerjaan">';
+                        html += '<div class="job-name-cell">';
+                        html += '<span class="job-name">' + (pekerjaan.nama_pekerjaan || '-') + '</span>';
+                        if (pekerjaan.skpd) {
+                            html += '<span class="job-badge skpd" style="margin-top:4px;">' + pekerjaan.skpd + '</span>';
+                        }
+                        html += '</div></td>';
+                        
+                        // Status
+                        const endDate = pekerjaan.latest_addendum_end || pekerjaan.tanggal_selesai || pekerjaan.tanggal_kontrak;
+                        const untilDate = pekerjaan.pho_date || new Date().toISOString().split('T')[0];
+                        let keterlambatan = 0;
+                        if (endDate) {
+                            const end = new Date(endDate);
+                            const until = new Date(untilDate);
+                            const diffTime = until - end;
+                            keterlambatan = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                        }
+                        const isCompleted = !!pekerjaan.pho_date;
+                        html += '<td data-label="Status">';
+                        if (isCompleted) {
+                            html += '<span class="job-badge" style="background:#e8f5e9;color:#2e7d32;">Selesai</span>';
+                        } else {
+                            html += '<span class="job-badge" style="background:#ffebee;color:#c62828;">Terlambat ' + keterlambatan + ' hari</span>';
+                        }
+                        html += '</td>';
+                        
+                        html += '<td data-label="Penyedia">' + (pekerjaan.nama_penyedia || '-') + '</td>';
+                        html += '<td data-label="Nomor Kontrak">' + (pekerjaan.nomor_kontrak || '-') + '</td>';
+                        html += '<td data-label="Nilai Kontrak">' + nilaiKontrak + '</td>';
+                        html += '<td data-label="Tanggal Kontrak">' + tanggalKontrak + '</td>';
+                        html += '<td data-label="Aksi">';
+                        html += '<button class="detail-btn edit" onclick="window.location.href=\'ubah_pekerjaan.php?id=' + pekerjaan.id_pekerjaan + '&id_entitas=' + pekerjaan.id_entitas + '\'" title="Edit">';
+                        html += '<svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>';
+                        html += '</button>';
+                        html += '<button class="detail-btn view" onclick="window.location.href=\'detail_pekerjaan.php?id=' + pekerjaan.id_pekerjaan + '\'" title="Detail">';
+                        html += '<svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>';
+                        html += '</button>';
+                        html += '<button class="detail-btn delete" onclick="deletePekerjaan(' + pekerjaan.id_pekerjaan + ', \'' + (pekerjaan.nama_pekerjaan || '') + '\')" title="Hapus">';
+                        html += '<svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>';
+                        html += '</button>';
+                        html += '</td></tr>';
+                        
+                        rowNumber++;
+                    });
+                });
+                
+                html += '</tbody></table></div>';
+                
+                // If no categories were rendered, show message
+                if (rowNumber === 1) {
+                    container.innerHTML = '<div class="no-data">Tidak ada data pekerjaan</div>';
+                    grandTotalSection.style.display = 'none';
+                    return;
+                }
+                
+                container.innerHTML = html;
+                
+                // Show grand total
+                if (grandTotal > 0) {
+                    grandTotalSection.style.display = 'block';
+                    document.getElementById('grandTotalValue').textContent = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(grandTotal);
                 } else {
-                    html += '<span class="job-badge" style="background:#ffebee;color:#c62828;">Terlambat ' + keterlambatan + ' hari</span>';
+                    grandTotalSection.style.display = 'none';
                 }
-                html += '</td>';
-                
-                html += '<td data-label="Penyedia">' + (pekerjaan.nama_penyedia || '-') + '</td>';
-                html += '<td data-label="Nomor Kontrak">' + (pekerjaan.nomor_kontrak || '-') + '</td>';
-                html += '<td data-label="Nilai Kontrak">' + nilaiKontrak + '</td>';
-                html += '<td data-label="Tanggal Kontrak">' + tanggalKontrak + '</td>';
-                html += '<td data-label="Aksi">';
-                html += '<button class="btn-detail" onclick="window.location.href=\'ubah_pekerjaan.php?id=' + pekerjaan.id_pekerjaan + '&id_entitas=' + pekerjaan.id_entitas + '\'" title="Edit">';
-                html += '<svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>';
-                html += '</button>';
-                html += '<button class="btn-detail" onclick="window.location.href=\'detail_pekerjaan.php?id=' + pekerjaan.id_pekerjaan + '\'" title="Detail">';
-                html += '<svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>';
-                html += '</button>';
-                html += '<button class="btn-delete" onclick="deletePekerjaan(' + pekerjaan.id_pekerjaan + ', \'' + (pekerjaan.nama_pekerjaan || '') + '\')" title="Hapus">';
-                html += '<svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>';
-                html += '</button>';
-                html += '</td></tr>';
-            });
+            } catch (error) {
+                console.error('Error rendering:', error);
+                const container = document.getElementById('categorySections');
+                container.innerHTML = '<div class="no-data">Error rendering data: ' + error.message + '</div>';
+            }
+        }
+
+        // Toggle category expand/collapse
+        function toggleCategory(categoryId) {
+            const icon = document.getElementById('icon-' + categoryId);
+            const childRows = document.querySelectorAll('.' + categoryId);
             
-            tbody.innerHTML = html;
+            // Check current state by looking at first child row
+            const firstChild = childRows[0];
+            const isExpanded = firstChild.style.display !== 'none' && firstChild.style.display !== '';
+            
+            childRows.forEach(row => {
+                if (isExpanded) {
+                    row.style.display = 'none';
+                    if (icon) {
+                        icon.textContent = '▶';
+                        icon.classList.remove('expanded');
+                    }
+                } else {
+                    row.style.display = 'table-row';
+                    if (icon) {
+                        icon.textContent = '▼';
+                        icon.classList.add('expanded');
+                    }
+                }
+            });
         }
 
         // Delete pekerjaan
